@@ -3,11 +3,13 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     plugins: [
         '@typescript-eslint',
+        'react'
     ],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
+        'plugin:react/recommended'
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -25,6 +27,22 @@ module.exports = {
         '@typescript-eslint/member-delimiter-style': 'off',
 
         // These rules don't add much value, are better covered by TypeScript and good definition files
+        'react/no-direct-mutation-state': 'off',
+        'react/no-deprecated': 'off',
+        'react/no-string-refs': 'off',
+        'react/require-render-return': 'off',
+        'react/display-name': 'off',
+
+        'react/no-unescaped-entities': 'off',
+        'react/no-children-prop': 'off',
+
+        'react/jsx-filename-extension': [
+            'warn',
+            {
+                extensions: ['.jsx', '.tsx']
+            }
+        ], // also want to use with ".tsx"
+        'react/prop-types': 'off' // Is this incompatible with TS props type?
     },
     settings: {
 
