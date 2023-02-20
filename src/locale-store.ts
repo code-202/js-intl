@@ -134,4 +134,39 @@ export class LocaleStore {
     hasActiveDomain (domain: string): boolean {
         return this.activeDomains.indexOf(domain) >= 0
     }
+
+    serialize(): Record<string, any> {
+        const data = {
+            status: this.status,
+            locale: this.locale,
+            messages: this.messages,
+            catalogs: {} as Record<string, any>,
+        };
+
+        for (const c of this.catalogs) {
+            data.catalogs[c.locale] = c.serialize();
+        }
+
+        return data;
+    }
+
+    deserialize(data: Record<string, any>): void {
+        try {
+            action(() => {
+                this.status = data.status
+                this.locale = data.locale
+                this.messages = data.messages
+            })()
+
+            for (const locale in data.catalogs) {
+                for (const c of this.catalogs) {
+                    if (locale == c.locale) {
+                        c.deserialize(data.catalogs[locale])
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Impossible to deserialize : bad data')
+        }
+    }
 }

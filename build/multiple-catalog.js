@@ -79,5 +79,28 @@ class MultipleCatalog {
         }
         this.status = 'ready';
     }
+    serialize() {
+        const data = {
+            status: this.status,
+            catalogs: [],
+        };
+        for (const c of this.catalogs) {
+            data.catalogs.push(c.serialize());
+        }
+        return data;
+    }
+    deserialize(data) {
+        try {
+            (0, mobx_1.action)(() => {
+                this.status = data.status;
+            })();
+            for (let k = 0; k < data.catalogs.length; k++) {
+                this.catalogs[k].deserialize(data.catalogs[k]);
+            }
+        }
+        catch (e) {
+            console.error('Impossible to deserialize : bad data');
+        }
+    }
 }
 exports.MultipleCatalog = MultipleCatalog;

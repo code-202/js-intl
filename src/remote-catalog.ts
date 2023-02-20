@@ -1,44 +1,64 @@
-import { Catalog, CatalogStatus } from './catalog'
+import { Catalog, CatalogStatus, CatalogMessages } from './catalog'
 import { JsonLoader } from 'react-mobx-loader'
-import { when } from 'mobx'
+import { makeObservable, when, action, observable } from 'mobx'
 import { AbstractCatalog } from './abstract-catalog'
 
 export class RemoteCatalog extends AbstractCatalog {
-    private _messages: {[key: string]: string} = {}
-    private _loader: JsonLoader
+    public status: CatalogStatus
+    public messages: CatalogMessages
+    private _url: string
 
     constructor (locale: string, url: string, domains: string[] = ['default']) {
         super(locale, domains)
-        this._loader = new JsonLoader(url, false)
 
-        when(() => this._loader.status === 'done', () => {
-            this._messages = this._loader.responseData
+        makeObservable(this, {
+            status: observable,
+            messages: observable,
+
         })
+
+        this.status = 'waiting'
+        this.messages = {}
+
+        this._url = url
     }
 
-    get status (): CatalogStatus {
-        switch (this._loader.status) {
-        case 'waiting':
-            return 'waiting'
-        case 'pending':
-            return 'updating'
-        default:
-            return 'ready'
+    prepare () {
+        if (this.status === 'waiting') {
+            const loader = new JsonLoader(this._url, false)
+
+            when(() => loader.status === 'done').then(action(() => {
+                this.messages = loader.responseData
+                this.status = 'ready'
+            }))
+
+            this.status = 'updating'
         }
     }
 
-    get messages () {
-
-        if (this._messages) {
-            return this._messages
+    serialize(): Record<string, any>
+    {
+        if (this.status === 'ready') {
+            return {
+                messages: this.messages
+            }
         }
 
         return {}
     }
 
-    prepare () {
-        if (this._loader.status === 'waiting') {
-            this._loader.load()
+    deserialize(data: Record<string, any>): void
+    {
+        try {
+            if (data.messages) {
+                action(() => {
+                    this.messages = data.messages
+                    this.status = 'ready'
+                })()
+            }
+        } catch (e) {
+            console.error('Impossible to deserialize : bad data')
         }
     }
+
 }

@@ -9,4 +9,6 @@ export interface Catalog {
     messages: CatalogMessages;
     status: CatalogStatus;
     prepare(): void;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

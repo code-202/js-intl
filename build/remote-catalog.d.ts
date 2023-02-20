@@ -1,12 +1,11 @@
-import { CatalogStatus } from './catalog';
+import { CatalogStatus, CatalogMessages } from './catalog';
 import { AbstractCatalog } from './abstract-catalog';
 export declare class RemoteCatalog extends AbstractCatalog {
-    private _messages;
-    private _loader;
+    status: CatalogStatus;
+    messages: CatalogMessages;
+    private _url;
     constructor(locale: string, url: string, domains?: string[]);
-    get status(): CatalogStatus;
-    get messages(): {
-        [key: string]: string;
-    };
     prepare(): void;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

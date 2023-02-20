@@ -17,5 +17,11 @@ class AbstractCatalog {
     hasDomain(domain) {
         return this.domains.indexOf(domain) >= 0;
     }
+    serialize() {
+        return {};
+    }
+    deserialize(data) {
+        // Do nothing
+    }
 }
 exports.AbstractCatalog = AbstractCatalog;

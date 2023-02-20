@@ -15,4 +15,6 @@ export declare class LocaleStore {
     hasDomain(domain: string): boolean;
     get activeDomains(): string[];
     hasActiveDomain(domain: string): boolean;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

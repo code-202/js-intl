@@ -9,4 +9,6 @@ export declare abstract class AbstractCatalog implements Catalog {
     abstract get messages(): CatalogMessages;
     abstract get status(): CatalogStatus;
     abstract prepare(): void;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

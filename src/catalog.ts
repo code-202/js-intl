@@ -10,5 +10,7 @@ export interface Catalog {
     hasDomain (domain: string): boolean
     messages: CatalogMessages,
     status: CatalogStatus,
-    prepare (): void
+    prepare (): void,
+    serialize(): Record<string, any>,
+    deserialize(data: Record<string, any>): void,
 }

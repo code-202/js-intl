@@ -101,4 +101,33 @@ export class MultipleCatalog implements Catalog {
 
         this.status = 'ready'
     }
+
+    serialize(): Record<string, any>
+    {
+        const data = {
+            status: this.status,
+            catalogs: [] as Record<string, any>[],
+        };
+
+        for (const c of this.catalogs) {
+            data.catalogs.push(c.serialize());
+        }
+
+        return data;
+    }
+
+    deserialize(data: Record<string, any>): void
+    {
+        try {
+            action(() => {
+                this.status = data.status
+            })()
+
+            for (let k = 0; k < data.catalogs.length; k++) {
+                this.catalogs[k].deserialize(data.catalogs[k])
+            }
+        } catch (e) {
+            console.error('Impossible to deserialize : bad data')
+        }
+    }
 }

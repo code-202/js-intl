@@ -26,4 +26,14 @@ export abstract class AbstractCatalog implements Catalog {
     abstract get status (): CatalogStatus
 
     abstract prepare (): void
+
+    serialize(): Record<string, any>
+    {
+        return {}
+    }
+
+    deserialize(data: Record<string, any>): void
+    {
+        // Do nothing
+    }
 }

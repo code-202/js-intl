@@ -5,34 +5,48 @@ const react_mobx_loader_1 = require("react-mobx-loader");
 const mobx_1 = require("mobx");
 const abstract_catalog_1 = require("./abstract-catalog");
 class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
-    _messages = {};
-    _loader;
+    status;
+    messages;
+    _url;
     constructor(locale, url, domains = ['default']) {
         super(locale, domains);
-        this._loader = new react_mobx_loader_1.JsonLoader(url, false);
-        (0, mobx_1.when)(() => this._loader.status === 'done', () => {
-            this._messages = this._loader.responseData;
+        (0, mobx_1.makeObservable)(this, {
+            status: mobx_1.observable,
+            messages: mobx_1.observable,
         });
+        this.status = 'waiting';
+        this.messages = {};
+        this._url = url;
     }
-    get status() {
-        switch (this._loader.status) {
-            case 'waiting':
-                return 'waiting';
-            case 'pending':
-                return 'updating';
-            default:
-                return 'ready';
+    prepare() {
+        if (this.status === 'waiting') {
+            const loader = new react_mobx_loader_1.JsonLoader(this._url, false);
+            (0, mobx_1.when)(() => loader.status === 'done').then((0, mobx_1.action)(() => {
+                this.messages = loader.responseData;
+                this.status = 'ready';
+            }));
+            this.status = 'updating';
         }
     }
-    get messages() {
-        if (this._messages) {
-            return this._messages;
+    serialize() {
+        if (this.status === 'ready') {
+            return {
+                messages: this.messages
+            };
         }
         return {};
     }
-    prepare() {
-        if (this._loader.status === 'waiting') {
-            this._loader.load();
+    deserialize(data) {
+        try {
+            if (data.messages) {
+                (0, mobx_1.action)(() => {
+                    this.messages = data.messages;
+                    this.status = 'ready';
+                })();
+            }
+        }
+        catch (e) {
+            console.error('Impossible to deserialize : bad data');
         }
     }
 }

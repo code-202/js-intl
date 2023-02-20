@@ -12,4 +12,6 @@ export declare class MultipleCatalog implements Catalog {
     hasDomain(domain: string): boolean;
     prepare(): void;
     private refreshStatus;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }
