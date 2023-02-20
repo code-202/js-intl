@@ -25,7 +25,7 @@ export class RemoteCatalog extends AbstractCatalog {
 
     prepare () {
         if (this.status === 'waiting') {
-            const loader = new JsonLoader(this._url, false)
+            const loader = new JsonLoader(this._url)
 
             when(() => loader.status === 'done').then(action(() => {
                 this.messages = loader.responseData

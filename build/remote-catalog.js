@@ -20,7 +20,7 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     }
     prepare() {
         if (this.status === 'waiting') {
-            const loader = new react_mobx_loader_1.JsonLoader(this._url, false);
+            const loader = new react_mobx_loader_1.JsonLoader(this._url);
             (0, mobx_1.when)(() => loader.status === 'done').then((0, mobx_1.action)(() => {
                 this.messages = loader.responseData;
                 this.status = 'ready';
