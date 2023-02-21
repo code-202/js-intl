@@ -28,6 +28,6 @@
     "mobx-react": "^7.6.0",
     "react": "^18.2.0",
     "react-intl": "^6.2.9",
-    "react-mobx-loader": "^1.7.7"
+    "react-mobx-loader": "^1.8.0"
   }
 }
