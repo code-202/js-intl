@@ -1,5 +1,5 @@
 import { Catalog, CatalogStatus, CatalogMessages } from './catalog'
-import { JsonLoader } from 'react-mobx-loader'
+import { JsonLoader } from '@code-202/loader'
 import { makeObservable, when, action, observable } from 'mobx'
 import { AbstractCatalog } from './abstract-catalog'
 

@@ -1,18 +1,26 @@
 import * as React from 'react'
 import { IntlProvider } from 'react-intl'
-import { inject, observer } from 'mobx-react'
+import { observer } from 'mobx-react'
+import { getKernel } from '@code-202/kernel'
+import { Manager } from '@code-202/loader'
 import CatalogAwaiter from './catalog-awaiter'
 import { LocaleStore } from './locale-store'
-import { Manager } from 'react-mobx-loader'
 
 interface Props extends React.PropsWithChildren {
-    locale?: LocaleStore
     domain?: string
 }
 
 interface State {}
 
 export class MobxIntlProvider extends React.Component<Props, State> {
+
+    private locale: LocaleStore
+
+    constructor(props: Props) {
+        super(props)
+
+        this.locale = getKernel().container.get('intl.locale') as LocaleStore
+    }
 
     render () {
 
@@ -24,8 +32,8 @@ export class MobxIntlProvider extends React.Component<Props, State> {
 
         return (
             <IntlProvider
-                locale={this.props.locale && this.props.locale.locale ? this.props.locale.locale : 'en'}
-                messages={this.props.locale && this.props.locale.messages ? this.props.locale.messages : {}}
+                locale={this.locale.locale ? this.locale.locale : 'en'}
+                messages={this.locale && this.locale.messages ? this.locale.messages : {}}
                 onError={ Manager.Manager.contentStrategy === 'show' ? () => {/* DO nothing */} : undefined}
             >
                 <CatalogAwaiter domain={domain} >
@@ -36,4 +44,4 @@ export class MobxIntlProvider extends React.Component<Props, State> {
     }
 }
 
-export default inject('locale')(observer(MobxIntlProvider))
+export default observer(MobxIntlProvider)

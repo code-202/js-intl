@@ -26,16 +26,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CatalogAwaiter = void 0;
 const React = __importStar(require("react"));
 const mobx_react_1 = require("mobx-react");
-const react_mobx_loader_1 = require("react-mobx-loader");
+const kernel_1 = require("@code-202/kernel");
+const loader_1 = require("@code-202/loader");
 class CatalogAwaiter extends React.Component {
+    locale;
+    constructor(props) {
+        super(props);
+        this.locale = (0, kernel_1.getKernel)().container.get('intl.locale');
+    }
     render() {
-        if (react_mobx_loader_1.Manager.Manager.contentStrategy === 'wait') {
-            if (!this.props.locale) {
-                return this.fallback;
-            }
+        if (loader_1.Manager.Manager.contentStrategy === 'wait') {
             const domains = typeof this.props.domain === 'string' ? [this.props.domain] : this.props.domain;
             for (const domain of domains) {
-                if (!this.props.locale.hasActiveDomain(domain)) {
+                if (!this.locale.hasActiveDomain(domain)) {
                     return this.fallback;
                 }
             }
@@ -50,4 +53,4 @@ class CatalogAwaiter extends React.Component {
     }
 }
 exports.CatalogAwaiter = CatalogAwaiter;
-exports.default = (0, mobx_react_1.inject)('locale')((0, mobx_react_1.observer)(CatalogAwaiter));
+exports.default = (0, mobx_react_1.observer)(CatalogAwaiter);

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { inject, observer } from 'mobx-react'
+import { observer } from 'mobx-react'
+import { getKernel } from '@code-202/kernel'
+import { Manager } from '@code-202/loader'
 import { LocaleStore } from './locale-store'
-import { Manager } from 'react-mobx-loader'
 
 interface Props extends React.PropsWithChildren {
-    locale?: LocaleStore
     domain: string | string[]
     fallback?: React.ComponentType<any>
 }
@@ -13,16 +13,20 @@ interface State {}
 
 export class CatalogAwaiter extends React.Component<Props, State> {
 
+    private locale: LocaleStore
+
+    constructor(props: Props) {
+        super(props)
+
+        this.locale = getKernel().container.get('intl.locale') as LocaleStore
+    }
+
     render () {
         if (Manager.Manager.contentStrategy === 'wait') {
-            if (!this.props.locale) {
-                return this.fallback
-            }
-
             const domains = typeof this.props.domain === 'string' ? [this.props.domain] : this.props.domain
 
             for (const domain of domains) {
-                if (!this.props.locale.hasActiveDomain(domain)) {
+                if (!this.locale.hasActiveDomain(domain)) {
                     return this.fallback
                 }
             }
@@ -44,4 +48,4 @@ export class CatalogAwaiter extends React.Component<Props, State> {
     }
 }
 
-export default inject('locale')(observer(CatalogAwaiter))
+export default observer(CatalogAwaiter)

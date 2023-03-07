@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { LocaleStore } from './locale-store';
 interface Props extends React.PropsWithChildren {
-    locale?: LocaleStore;
     domain?: string;
 }
 interface State {
 }
 export declare class MobxIntlProvider extends React.Component<Props, State> {
+    private locale;
+    constructor(props: Props);
     render(): JSX.Element;
 }
-declare const _default: typeof MobxIntlProvider & import("mobx-react").IWrappedComponent<Props>;
+declare const _default: typeof MobxIntlProvider;
 export default _default;

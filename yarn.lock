@@ -2,6 +2,32 @@
 # yarn lockfile v1
 
 
+"@code-202/agent@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@code-202/agent/-/agent-3.2.1.tgz#1f72c0cf66ca156c1a38404af5769edd78171373"
+  integrity sha512-RLJBqQOWjAR+xCqpy5XbC2kmk9vCff3zF0WjPAeA744pcTk8JNZ3gXu+pHXOTAF+lPphDzaJOID20uDSQEAVKA==
+  dependencies:
+    superagent "^8.0.9"
+
+"@code-202/kernel@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@code-202/kernel/-/kernel-1.0.0.tgz#08cd631dbbf4911c2297a43737e0e101867fdc9c"
+  integrity sha512-E4g5kAgLXk9iTqLeqsQR6+8Q6qEB4OncRxJbix33A70VjMu7e6dWwJfaXgJpf3SR7kjeQWAb/UQLJf1+mMfFrw==
+  dependencies:
+    lodash.has "^4.5.2"
+    mobx "^6.8.0"
+
+"@code-202/loader@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@code-202/loader/-/loader-1.10.0.tgz#f6c69262b68ada00cc529ac0be8d469aac255f48"
+  integrity sha512-FoVY4yc1VRo6wiZp/L5ASayZFDL7BrODpibb3kcdH0izVcQwqRAKzZ5a9PV+jYvdWUqMJQUNeXORTNvHk1yWpA==
+  dependencies:
+    "@code-202/agent" "^3.2.1"
+    classnames "^2.3.2"
+    mobx "^6.8.0"
+    mobx-react "^7.6.0"
+    react "^18.2.0"
+
 "@eslint/eslintrc@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-2.0.0.tgz#943309d8697c52fc82c076e90c1c74fbbe69dbff"
@@ -1336,6 +1362,11 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
 
+lodash.has@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/lodash.has/-/lodash.has-4.5.2.tgz#d19f4dc1095058cccbe2b0cdf4ee0fe4aa37c862"
+  integrity sha512-rnYUdIo6xRCJnQmbVFEwcxF144erlD+M3YcJUVesflU9paQaE8p+fJDcIQrlMYbxoANFL+AB9hZrzSBBk5PL+g==
+
 lodash.isempty@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
@@ -1633,9 +1664,9 @@ punycode@^2.1.0:
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
 qs@^6.11.0:
-  version "6.11.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
-  integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
+  version "6.11.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.1.tgz#6c29dff97f0c0060765911ba65cbc9764186109f"
+  integrity sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==
   dependencies:
     side-channel "^1.0.4"
 
@@ -1664,17 +1695,6 @@ react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
-
-react-mobx-loader@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/react-mobx-loader/-/react-mobx-loader-1.9.0.tgz#5c822746b2f0bc7f588fa75e780e4c535de9765b"
-  integrity sha512-zOZR83s21OPF3bDuAgya2yWpBp2EgXWX+JKeKGDSo7VV6AKNmX3KAJibuOj35JbHzDdidp9ouGn8ISdOPmKgAw==
-  dependencies:
-    classnames "^2.3.2"
-    mobx "^6.8.0"
-    mobx-react "^7.6.0"
-    react "^18.2.0"
-    rich-agent "^3.2.1"
 
 react@^18.2.0:
   version "18.2.0"
@@ -1727,13 +1747,6 @@ reusify@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
   integrity sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
-
-rich-agent@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/rich-agent/-/rich-agent-3.2.1.tgz#8b2cfbe693826db79b280a4c2aa610102faab7aa"
-  integrity sha512-+erLuQsdPufgFU6CKLFsaAZbDnCPOAhNWikcFPb1ZMbzFg40tQ9PK0h26OWh9aWskP4y8Pdvv6D3woXZxFd9+g==
-  dependencies:
-    superagent "^8.0.9"
 
 rimraf@^3.0.2:
   version "3.0.2"

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RemoteCatalog = void 0;
-const react_mobx_loader_1 = require("react-mobx-loader");
+const loader_1 = require("@code-202/loader");
 const mobx_1 = require("mobx");
 const abstract_catalog_1 = require("./abstract-catalog");
 class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
@@ -20,7 +20,7 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     }
     prepare() {
         if (this.status === 'waiting') {
-            const loader = new react_mobx_loader_1.JsonLoader(this._url);
+            const loader = new loader_1.JsonLoader(this._url);
             (0, mobx_1.when)(() => loader.status === 'done').then((0, mobx_1.action)(() => {
                 this.messages = loader.responseData;
                 this.status = 'ready';

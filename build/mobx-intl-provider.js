@@ -30,17 +30,23 @@ exports.MobxIntlProvider = void 0;
 const React = __importStar(require("react"));
 const react_intl_1 = require("react-intl");
 const mobx_react_1 = require("mobx-react");
+const kernel_1 = require("@code-202/kernel");
+const loader_1 = require("@code-202/loader");
 const catalog_awaiter_1 = __importDefault(require("./catalog-awaiter"));
-const react_mobx_loader_1 = require("react-mobx-loader");
 class MobxIntlProvider extends React.Component {
+    locale;
+    constructor(props) {
+        super(props);
+        this.locale = (0, kernel_1.getKernel)().container.get('intl.locale');
+    }
     render() {
         let { domain } = this.props;
         if (!domain) {
             domain = 'default';
         }
-        return (React.createElement(react_intl_1.IntlProvider, { locale: this.props.locale && this.props.locale.locale ? this.props.locale.locale : 'en', messages: this.props.locale && this.props.locale.messages ? this.props.locale.messages : {}, onError: react_mobx_loader_1.Manager.Manager.contentStrategy === 'show' ? () => { } : undefined },
+        return (React.createElement(react_intl_1.IntlProvider, { locale: this.locale.locale ? this.locale.locale : 'en', messages: this.locale && this.locale.messages ? this.locale.messages : {}, onError: loader_1.Manager.Manager.contentStrategy === 'show' ? () => { } : undefined },
             React.createElement(catalog_awaiter_1.default, { domain: domain }, this.props.children)));
     }
 }
 exports.MobxIntlProvider = MobxIntlProvider;
-exports.default = (0, mobx_react_1.inject)('locale')((0, mobx_react_1.observer)(MobxIntlProvider));
+exports.default = (0, mobx_react_1.observer)(MobxIntlProvider);
