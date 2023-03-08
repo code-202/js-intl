@@ -17,10 +17,10 @@ class AbstractCatalog {
     hasDomain(domain) {
         return this.domains.indexOf(domain) >= 0;
     }
-    serialize() {
+    normalize() {
         return {};
     }
-    deserialize(data) {
+    denormalize(data) {
         // Do nothing
     }
 }

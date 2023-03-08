@@ -79,23 +79,23 @@ class MultipleCatalog {
         }
         this.status = 'ready';
     }
-    serialize() {
+    normalize() {
         const data = {
             status: this.status,
             catalogs: [],
         };
         for (const c of this.catalogs) {
-            data.catalogs.push(c.serialize());
+            data.catalogs.push(c.normalize());
         }
         return data;
     }
-    deserialize(data) {
+    denormalize(data) {
         try {
             (0, mobx_1.action)(() => {
                 this.status = data.status;
             })();
             for (let k = 0; k < data.catalogs.length; k++) {
-                this.catalogs[k].deserialize(data.catalogs[k]);
+                this.catalogs[k].denormalize(data.catalogs[k]);
             }
         }
         catch (e) {

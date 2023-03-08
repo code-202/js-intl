@@ -1,4 +1,4 @@
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog';
+import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog';
 export declare class MultipleCatalog implements Catalog {
     catalogs: Catalog[];
     status: CatalogStatus;
@@ -12,6 +12,10 @@ export declare class MultipleCatalog implements Catalog {
     hasDomain(domain: string): boolean;
     prepare(): void;
     private refreshStatus;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): void;
+    normalize(): MultipleCatalogNormalized;
+    denormalize(data: MultipleCatalogNormalized): void;
+}
+export interface MultipleCatalogNormalized extends CatalogNormalized {
+    status: CatalogStatus;
+    catalogs: CatalogNormalized[];
 }

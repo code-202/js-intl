@@ -1,6 +1,7 @@
+import { Denormalizable, Normalizable } from '@code-202/serializer';
 import { Catalog, CatalogMessages, CatalogStatus } from './catalog';
-import { MultipleCatalog } from './multiple-catalog';
-export declare class LocaleStore {
+import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog';
+export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denormalizable<LocaleStoreNormalized> {
     status: CatalogStatus;
     locale: string;
     messages: CatalogMessages;
@@ -15,6 +16,12 @@ export declare class LocaleStore {
     hasDomain(domain: string): boolean;
     get activeDomains(): string[];
     hasActiveDomain(domain: string): boolean;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): void;
+    normalize(): LocaleStoreNormalized;
+    denormalize(data: LocaleStoreNormalized): void;
+}
+export interface LocaleStoreNormalized {
+    status: CatalogStatus;
+    locale: string;
+    messages: CatalogMessages;
+    catalogs: Record<string, MultipleCatalogNormalized>;
 }

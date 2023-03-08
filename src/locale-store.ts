@@ -1,8 +1,9 @@
+import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { makeObservable, observable, action, computed, when } from 'mobx'
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog'
-import { MultipleCatalog } from './multiple-catalog'
+import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
+import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
 
-export class LocaleStore {
+export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denormalizable<LocaleStoreNormalized> {
     public status: CatalogStatus
     public locale: string
     public messages: CatalogMessages
@@ -135,22 +136,22 @@ export class LocaleStore {
         return this.activeDomains.indexOf(domain) >= 0
     }
 
-    serialize(): Record<string, any> {
+    normalize (): LocaleStoreNormalized {
         const data = {
             status: this.status,
             locale: this.locale,
             messages: this.messages,
-            catalogs: {} as Record<string, any>,
+            catalogs: {} as Record<string, MultipleCatalogNormalized>,
         };
 
         for (const c of this.catalogs) {
-            data.catalogs[c.locale] = c.serialize();
+            data.catalogs[c.locale] = c.normalize()
         }
 
-        return data;
+        return data
     }
 
-    deserialize(data: Record<string, any>): void {
+    denormalize (data: LocaleStoreNormalized) {
         try {
             action(() => {
                 this.status = data.status
@@ -161,7 +162,7 @@ export class LocaleStore {
             for (const locale in data.catalogs) {
                 for (const c of this.catalogs) {
                     if (locale == c.locale) {
-                        c.deserialize(data.catalogs[locale])
+                        c.denormalize(data.catalogs[locale])
                     }
                 }
             }
@@ -169,4 +170,11 @@ export class LocaleStore {
             console.error('Impossible to deserialize : bad data')
         }
     }
+}
+
+export interface LocaleStoreNormalized {
+    status: CatalogStatus
+    locale: string
+    messages: CatalogMessages
+    catalogs: Record<string, MultipleCatalogNormalized>
 }

@@ -104,7 +104,7 @@ class LocaleStore {
     hasActiveDomain(domain) {
         return this.activeDomains.indexOf(domain) >= 0;
     }
-    serialize() {
+    normalize() {
         const data = {
             status: this.status,
             locale: this.locale,
@@ -112,11 +112,11 @@ class LocaleStore {
             catalogs: {},
         };
         for (const c of this.catalogs) {
-            data.catalogs[c.locale] = c.serialize();
+            data.catalogs[c.locale] = c.normalize();
         }
         return data;
     }
-    deserialize(data) {
+    denormalize(data) {
         try {
             (0, mobx_1.action)(() => {
                 this.status = data.status;
@@ -126,7 +126,7 @@ class LocaleStore {
             for (const locale in data.catalogs) {
                 for (const c of this.catalogs) {
                     if (locale == c.locale) {
-                        c.deserialize(data.catalogs[locale]);
+                        c.denormalize(data.catalogs[locale]);
                     }
                 }
             }

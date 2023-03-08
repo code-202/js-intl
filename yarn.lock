@@ -2,31 +2,39 @@
 # yarn lockfile v1
 
 
-"@code-202/agent@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@code-202/agent/-/agent-3.2.1.tgz#1f72c0cf66ca156c1a38404af5769edd78171373"
-  integrity sha512-RLJBqQOWjAR+xCqpy5XbC2kmk9vCff3zF0WjPAeA744pcTk8JNZ3gXu+pHXOTAF+lPphDzaJOID20uDSQEAVKA==
+"@code-202/agent@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@code-202/agent/-/agent-4.0.0.tgz#e0b0ae5fca8c04e935ed8d9015100f4066c29624"
+  integrity sha512-egAEF+9htyAGta4PFmtT1tge0X6c1wlqm7QYSGnMwNAW6CEo+elB0dfYtwfsj+9NliIOk1ZLEFzNhf6X+hXT+w==
   dependencies:
+    "@code-202/serializer" "^1.0.0"
     superagent "^8.0.9"
 
-"@code-202/kernel@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@code-202/kernel/-/kernel-1.0.0.tgz#08cd631dbbf4911c2297a43737e0e101867fdc9c"
-  integrity sha512-E4g5kAgLXk9iTqLeqsQR6+8Q6qEB4OncRxJbix33A70VjMu7e6dWwJfaXgJpf3SR7kjeQWAb/UQLJf1+mMfFrw==
+"@code-202/kernel@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@code-202/kernel/-/kernel-1.1.0.tgz#d1d7f1aa255ab26c5f761a5df143894e2b724cc8"
+  integrity sha512-DVGkbc3MD9QniwT+J9zt3NKAUV0Fp3QBS84almW3N8j57NeVEHL62xFXT6orj/1NGEW2hYxTO/LVcq2lGd9DNw==
   dependencies:
+    "@code-202/serializer" "^1.0.0"
     lodash.has "^4.5.2"
     mobx "^6.8.0"
 
-"@code-202/loader@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@code-202/loader/-/loader-1.10.0.tgz#f6c69262b68ada00cc529ac0be8d469aac255f48"
-  integrity sha512-FoVY4yc1VRo6wiZp/L5ASayZFDL7BrODpibb3kcdH0izVcQwqRAKzZ5a9PV+jYvdWUqMJQUNeXORTNvHk1yWpA==
+"@code-202/loader@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@code-202/loader/-/loader-2.0.1.tgz#c9ed44f286bc36ed9642855c1cb84c73df1c1e57"
+  integrity sha512-PzJNdltp+YeLt+uKTgJlvLXORq3ylUcwuBJKN8LiRf8D7W8s6HdwdJSqD19UNZLEvMaSMb0s74xEzWrLatqb+Q==
   dependencies:
-    "@code-202/agent" "^3.2.1"
+    "@code-202/agent" "^4.0.0"
+    "@code-202/serializer" "^1.0.0"
     classnames "^2.3.2"
     mobx "^6.8.0"
     mobx-react "^7.6.0"
     react "^18.2.0"
+
+"@code-202/serializer@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@code-202/serializer/-/serializer-1.0.0.tgz#782f06ead1225bf2243f72acafd6772bd543eb72"
+  integrity sha512-Wi3qN4oSg3dOuW18GWuMcxeo+OZBXS0h7GZqiivkZZD5+5T1JPBWq+dIqo+pDBIcz+HYIx7lniKCGXktgl+/Tg==
 
 "@eslint/eslintrc@^2.0.0":
   version "2.0.0"

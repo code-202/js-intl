@@ -1,4 +1,4 @@
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog'
+import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 import { makeObservable, observable, when, computed, action } from 'mobx'
 
 export class MultipleCatalog implements Catalog {
@@ -102,32 +102,35 @@ export class MultipleCatalog implements Catalog {
         this.status = 'ready'
     }
 
-    serialize(): Record<string, any>
-    {
+    normalize(): MultipleCatalogNormalized {
         const data = {
             status: this.status,
-            catalogs: [] as Record<string, any>[],
+            catalogs: [] as CatalogNormalized[],
         };
 
         for (const c of this.catalogs) {
-            data.catalogs.push(c.serialize());
+            data.catalogs.push(c.normalize());
         }
 
         return data;
     }
 
-    deserialize(data: Record<string, any>): void
-    {
+    denormalize(data: MultipleCatalogNormalized) {
         try {
             action(() => {
                 this.status = data.status
             })()
 
             for (let k = 0; k < data.catalogs.length; k++) {
-                this.catalogs[k].deserialize(data.catalogs[k])
+                this.catalogs[k].denormalize(data.catalogs[k])
             }
         } catch (e) {
             console.error('Impossible to deserialize : bad data')
         }
     }
+}
+
+export interface MultipleCatalogNormalized extends CatalogNormalized {
+    status: CatalogStatus
+    catalogs: CatalogNormalized[]
 }

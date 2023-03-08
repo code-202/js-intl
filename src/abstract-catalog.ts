@@ -1,4 +1,4 @@
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog'
+import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 
 export abstract class AbstractCatalog implements Catalog {
     private _locale: string
@@ -27,13 +27,11 @@ export abstract class AbstractCatalog implements Catalog {
 
     abstract prepare (): void
 
-    serialize(): Record<string, any>
-    {
+    normalize(): CatalogNormalized {
         return {}
     }
 
-    deserialize(data: Record<string, any>): void
-    {
+    denormalize(data: CatalogNormalized) {
         // Do nothing
     }
 }

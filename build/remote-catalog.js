@@ -28,7 +28,7 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
             this.status = 'updating';
         }
     }
-    serialize() {
+    normalize() {
         if (this.status === 'ready') {
             return {
                 messages: this.messages
@@ -36,14 +36,14 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
         }
         return {};
     }
-    deserialize(data) {
+    denormalize(data) {
         try {
-            if (data.messages) {
-                (0, mobx_1.action)(() => {
+            (0, mobx_1.action)(() => {
+                if (data.messages) {
                     this.messages = data.messages;
                     this.status = 'ready';
-                })();
-            }
+                }
+            })();
         }
         catch (e) {
             console.error('Impossible to deserialize : bad data');

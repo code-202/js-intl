@@ -1,4 +1,4 @@
-import { Catalog, CatalogStatus, CatalogMessages } from './catalog'
+import { Catalog, CatalogStatus, CatalogMessages, CatalogNormalized } from './catalog'
 import { JsonLoader } from '@code-202/loader'
 import { makeObservable, when, action, observable } from 'mobx'
 import { AbstractCatalog } from './abstract-catalog'
@@ -36,8 +36,7 @@ export class RemoteCatalog extends AbstractCatalog {
         }
     }
 
-    serialize(): Record<string, any>
-    {
+    normalize(): RemoteCatalogNormalized {
         if (this.status === 'ready') {
             return {
                 messages: this.messages
@@ -47,18 +46,20 @@ export class RemoteCatalog extends AbstractCatalog {
         return {}
     }
 
-    deserialize(data: Record<string, any>): void
-    {
+    denormalize(data: RemoteCatalogNormalized) {
         try {
-            if (data.messages) {
-                action(() => {
+            action(() => {
+                if (data.messages) {
                     this.messages = data.messages
                     this.status = 'ready'
-                })()
-            }
+                }
+            })()
         } catch (e) {
             console.error('Impossible to deserialize : bad data')
         }
     }
+}
 
+export interface RemoteCatalogNormalized extends CatalogNormalized {
+    messages?: CatalogMessages
 }

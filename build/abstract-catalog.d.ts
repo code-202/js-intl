@@ -1,4 +1,4 @@
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog';
+import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog';
 export declare abstract class AbstractCatalog implements Catalog {
     private _locale;
     private _domains;
@@ -9,6 +9,6 @@ export declare abstract class AbstractCatalog implements Catalog {
     abstract get messages(): CatalogMessages;
     abstract get status(): CatalogStatus;
     abstract prepare(): void;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): void;
+    normalize(): CatalogNormalized;
+    denormalize(data: CatalogNormalized): void;
 }
