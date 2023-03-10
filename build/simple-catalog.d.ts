@@ -5,5 +5,5 @@ export declare class SimpleCatalog extends AbstractCatalog {
     constructor(locale: string, messages: CatalogMessages, domains?: string[]);
     get messages(): CatalogMessages;
     get status(): CatalogStatus;
-    prepare(): void;
+    prepare(): Promise<void>;
 }

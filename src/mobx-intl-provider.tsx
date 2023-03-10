@@ -34,7 +34,7 @@ export class MobxIntlProvider extends React.Component<Props, State> {
             <IntlProvider
                 locale={this.locale.locale ? this.locale.locale : 'en'}
                 messages={this.locale && this.locale.messages ? this.locale.messages : {}}
-                onError={ Manager.Manager.contentStrategy === 'show' ? () => {/* DO nothing */} : undefined}
+                onError={ Manager.Manager.contentStrategy === 'show' ? () => {/* Do nothing */} : undefined}
             >
                 <CatalogAwaiter domain={domain} >
                     { this.props.children }

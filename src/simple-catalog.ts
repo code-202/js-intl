@@ -17,7 +17,7 @@ export class SimpleCatalog extends AbstractCatalog {
         return 'ready'
     }
 
-    prepare () {
-        // Nothing to do
+    prepare (): Promise<void> {
+        return Promise.resolve()
     }
 }

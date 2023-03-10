@@ -1,19 +1,20 @@
-import { Catalog, CatalogMessages, CatalogStatus } from './catalog'
+import * as CatalogComponent from './catalog'
+import { Catalog } from './catalog'
 import CatalogAwaiter from './catalog-awaiter'
 import { LocaleStore } from './locale-store'
 import MobxIntlProvider from './mobx-intl-provider'
-import { SimpleCatalog } from './simple-catalog'
-import { RemoteCatalog } from './remote-catalog'
 import { MultipleCatalog } from './multiple-catalog'
+import { RemoteCatalog } from './remote-catalog'
+import { SimpleCatalog } from './simple-catalog'
 
 export {
     Catalog,
     CatalogAwaiter,
-    CatalogMessages,
-    CatalogStatus,
+    CatalogComponent,
     LocaleStore,
     MobxIntlProvider,
-    SimpleCatalog,
+    MultipleCatalog,
     RemoteCatalog,
-    MultipleCatalog
+    SimpleCatalog,
 }
+

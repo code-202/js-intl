@@ -1,32 +1,26 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { makeObservable, observable, action, computed, when } from 'mobx'
-import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
+import { makeObservable, observable, action, computed, when, autorun } from 'mobx'
+import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus, UnknownLocaleError } from './catalog'
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
 
 export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denormalizable<LocaleStoreNormalized> {
-    public status: CatalogStatus
-    public locale: string
-    public messages: CatalogMessages
+    private _status: CatalogStatus = 'waiting'
+    private _locale: string = ''
+    private _messages: CatalogMessages = {}
 
     catalogs: MultipleCatalog[] = []
 
     constructor (locales: string[]) {
-        makeObservable <LocaleStore, 'changeCurrentCatalog'>(this, {
-            status: observable,
-            locale: observable,
-            messages: observable,
+        makeObservable <LocaleStore, '_status' | '_locale' | '_messages'>(this, {
+            _status: observable,
+            _locale: observable,
+            _messages: observable,
 
             domains: computed,
             activeDomains: computed,
 
             addCatalog: action,
-            changeLocale: action,
-            changeCurrentCatalog: action,
         })
-
-        this.status = 'waiting'
-        this.locale = ''
-        this.messages = {}
 
         for (const locale of locales) {
             if (this.getCatalog(locale) === null) {
@@ -35,42 +29,55 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         }
     }
 
-    addCatalog (catalog: Catalog) {
-        const mc = this.getCatalog(catalog.locale)
-        if (mc) {
-            mc.addCatalog(catalog)
-        }
+    get locale (): string {
+        return this._locale
     }
 
-    changeLocale (locale: string) {
-        const catalog = this.getCatalog(locale)
+    get status (): CatalogStatus {
+        return this._status
+    }
 
-        if (!catalog) {
-            return
-        }
+    get messages (): CatalogMessages {
+        return this._messages
+    }
 
-        this.status = 'updating'
+    addCatalog (catalog: Catalog): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const mc = this.getCatalog(catalog.locale)
+            if (mc) {
+                mc.addCatalog(catalog).then(() => {
+                    resolve()
+                }).catch(() => {
+                    reject()
+                })
+            } else {
+                throw new BadLocaleCatalogError('bad locale, ' + catalog.locale + ' is not managed by this store')
+            }
+        })
+    }
 
-        if (catalog.status !== 'ready') {
-            when(() => catalog.status === 'ready', () => {
-                this.changeCurrentCatalog(catalog)
+    changeLocale (locale: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const catalog = this.getCatalog(locale)
+
+            if (!catalog) {
+                throw new UnknownLocaleError('bad locale, ' + locale + ' is not managed by this store')
+            }
+
+            action(() => this._status = 'updating')()
+
+            catalog.prepare().then(() => {
+                action(() => {
+                    this._locale = catalog.locale
+                    this._messages = catalog.messages
+                    this._status = 'ready'
+                })()
+
+                resolve()
+            }).catch(() => {
+                action(() => this._status = 'error')()
+                reject()
             })
-
-            catalog.prepare()
-
-            return
-        }
-
-        this.changeCurrentCatalog(catalog)
-    }
-
-    private changeCurrentCatalog (catalog: Catalog) {
-        this.locale = catalog.locale
-        this.messages = catalog.messages
-        this.status = 'ready'
-
-        when(() => catalog.status !== 'ready', () => {
-            this.changeLocale(catalog.locale)
         })
     }
 
@@ -114,10 +121,6 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
             let ready = true
 
-            if (catalogs.length === 0) {
-                ready = false
-            }
-
             for (const c of catalogs) {
                 if (c.status !== 'ready') {
                     ready = false
@@ -152,22 +155,18 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
     }
 
     denormalize (data: LocaleStoreNormalized) {
-        try {
-            action(() => {
-                this.status = data.status
-                this.locale = data.locale
-                this.messages = data.messages
-            })()
+        action(() => {
+            this._status = data.status
+            this._locale = data.locale
+            this._messages = data.messages
+        })()
 
-            for (const locale in data.catalogs) {
-                for (const c of this.catalogs) {
-                    if (locale == c.locale) {
-                        c.denormalize(data.catalogs[locale])
-                    }
+        for (const locale in data.catalogs) {
+            for (const c of this.catalogs) {
+                if (locale == c.locale) {
+                    c.denormalize(data.catalogs[locale])
                 }
             }
-        } catch (e) {
-            console.error('Impossible to deserialize : bad data')
         }
     }
 }

@@ -5,8 +5,8 @@ const loader_1 = require("@code-202/loader");
 const mobx_1 = require("mobx");
 const abstract_catalog_1 = require("./abstract-catalog");
 class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
-    status;
-    messages;
+    status = 'waiting';
+    messages = {};
     _url;
     constructor(locale, url, domains = ['default']) {
         super(locale, domains);
@@ -14,19 +14,35 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
             status: mobx_1.observable,
             messages: mobx_1.observable,
         });
-        this.status = 'waiting';
-        this.messages = {};
         this._url = url;
     }
     prepare() {
-        if (this.status === 'waiting') {
-            const loader = new loader_1.JsonLoader(this._url);
-            (0, mobx_1.when)(() => loader.status === 'done').then((0, mobx_1.action)(() => {
-                this.messages = loader.responseData;
-                this.status = 'ready';
-            }));
-            this.status = 'updating';
-        }
+        return new Promise((resolve, reject) => {
+            if (this.status === 'waiting') {
+                const loader = new loader_1.JsonLoader(this._url);
+                (0, mobx_1.when)(() => loader.status === 'done' || loader.status === 'error').then((0, mobx_1.action)(() => {
+                    if (loader.status === 'done') {
+                        this.messages = loader.responseData;
+                        (0, mobx_1.action)(() => {
+                            this.status = 'ready';
+                        })();
+                        resolve();
+                    }
+                    else {
+                        (0, mobx_1.action)(() => {
+                            this.status = 'error';
+                        })();
+                        reject();
+                    }
+                }));
+                (0, mobx_1.action)(() => {
+                    this.status = 'updating';
+                })();
+            }
+            else {
+                reject();
+            }
+        });
     }
     normalize() {
         if (this.status === 'ready') {
@@ -37,17 +53,12 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
         return {};
     }
     denormalize(data) {
-        try {
-            (0, mobx_1.action)(() => {
-                if (data.messages) {
-                    this.messages = data.messages;
-                    this.status = 'ready';
-                }
-            })();
-        }
-        catch (e) {
-            console.error('Impossible to deserialize : bad data');
-        }
+        (0, mobx_1.action)(() => {
+            if (data.messages) {
+                this.messages = data.messages;
+                this.status = 'ready';
+            }
+        })();
     }
 }
 exports.RemoteCatalog = RemoteCatalog;

@@ -2,59 +2,70 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocaleStore = void 0;
 const mobx_1 = require("mobx");
+const catalog_1 = require("./catalog");
 const multiple_catalog_1 = require("./multiple-catalog");
 class LocaleStore {
-    status;
-    locale;
-    messages;
+    _status = 'waiting';
+    _locale = '';
+    _messages = {};
     catalogs = [];
     constructor(locales) {
         (0, mobx_1.makeObservable)(this, {
-            status: mobx_1.observable,
-            locale: mobx_1.observable,
-            messages: mobx_1.observable,
+            _status: mobx_1.observable,
+            _locale: mobx_1.observable,
+            _messages: mobx_1.observable,
             domains: mobx_1.computed,
             activeDomains: mobx_1.computed,
             addCatalog: mobx_1.action,
-            changeLocale: mobx_1.action,
-            changeCurrentCatalog: mobx_1.action,
         });
-        this.status = 'waiting';
-        this.locale = '';
-        this.messages = {};
         for (const locale of locales) {
             if (this.getCatalog(locale) === null) {
                 this.catalogs.push(new multiple_catalog_1.MultipleCatalog(locale));
             }
         }
     }
+    get locale() {
+        return this._locale;
+    }
+    get status() {
+        return this._status;
+    }
+    get messages() {
+        return this._messages;
+    }
     addCatalog(catalog) {
-        const mc = this.getCatalog(catalog.locale);
-        if (mc) {
-            mc.addCatalog(catalog);
-        }
+        return new Promise((resolve, reject) => {
+            const mc = this.getCatalog(catalog.locale);
+            if (mc) {
+                mc.addCatalog(catalog).then(() => {
+                    resolve();
+                }).catch(() => {
+                    reject();
+                });
+            }
+            else {
+                throw new catalog_1.BadLocaleCatalogError('bad locale, ' + catalog.locale + ' is not managed by this store');
+            }
+        });
     }
     changeLocale(locale) {
-        const catalog = this.getCatalog(locale);
-        if (!catalog) {
-            return;
-        }
-        this.status = 'updating';
-        if (catalog.status !== 'ready') {
-            (0, mobx_1.when)(() => catalog.status === 'ready', () => {
-                this.changeCurrentCatalog(catalog);
+        return new Promise((resolve, reject) => {
+            const catalog = this.getCatalog(locale);
+            if (!catalog) {
+                throw new catalog_1.UnknownLocaleError('bad locale, ' + locale + ' is not managed by this store');
+            }
+            (0, mobx_1.action)(() => this._status = 'updating')();
+            catalog.prepare().then(() => {
+                (0, mobx_1.action)(() => {
+                    this._locale = catalog.locale;
+                    this._messages = catalog.messages;
+                    this._status = 'ready';
+                })();
+                resolve();
+            }).catch(() => {
+                (0, mobx_1.action)(() => this._status = 'error')();
+                reject();
             });
-            catalog.prepare();
-            return;
-        }
-        this.changeCurrentCatalog(catalog);
-    }
-    changeCurrentCatalog(catalog) {
-        this.locale = catalog.locale;
-        this.messages = catalog.messages;
-        this.status = 'ready';
-        (0, mobx_1.when)(() => catalog.status !== 'ready', () => {
-            this.changeLocale(catalog.locale);
         });
     }
     getCatalog(locale) {
@@ -87,9 +98,6 @@ class LocaleStore {
         for (const domain of this.domains) {
             const catalogs = this.getCatalogsByDomain(domain);
             let ready = true;
-            if (catalogs.length === 0) {
-                ready = false;
-            }
             for (const c of catalogs) {
                 if (c.status !== 'ready') {
                     ready = false;
@@ -117,22 +125,17 @@ class LocaleStore {
         return data;
     }
     denormalize(data) {
-        try {
-            (0, mobx_1.action)(() => {
-                this.status = data.status;
-                this.locale = data.locale;
-                this.messages = data.messages;
-            })();
-            for (const locale in data.catalogs) {
-                for (const c of this.catalogs) {
-                    if (locale == c.locale) {
-                        c.denormalize(data.catalogs[locale]);
-                    }
+        (0, mobx_1.action)(() => {
+            this._status = data.status;
+            this._locale = data.locale;
+            this._messages = data.messages;
+        })();
+        for (const locale in data.catalogs) {
+            for (const c of this.catalogs) {
+                if (locale == c.locale) {
+                    c.denormalize(data.catalogs[locale]);
                 }
             }
-        }
-        catch (e) {
-            console.error('Impossible to deserialize : bad data');
         }
     }
 }

@@ -8,7 +8,7 @@ export declare abstract class AbstractCatalog implements Catalog {
     hasDomain(domain: string): boolean;
     abstract get messages(): CatalogMessages;
     abstract get status(): CatalogStatus;
-    abstract prepare(): void;
+    abstract prepare(): Promise<void>;
     normalize(): CatalogNormalized;
     denormalize(data: CatalogNormalized): void;
 }

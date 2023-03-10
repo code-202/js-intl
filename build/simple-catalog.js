@@ -15,7 +15,7 @@ class SimpleCatalog extends abstract_catalog_1.AbstractCatalog {
         return 'ready';
     }
     prepare() {
-        // Nothing to do
+        return Promise.resolve();
     }
 }
 exports.SimpleCatalog = SimpleCatalog;

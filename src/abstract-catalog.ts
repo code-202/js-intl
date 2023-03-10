@@ -25,7 +25,7 @@ export abstract class AbstractCatalog implements Catalog {
 
     abstract get status (): CatalogStatus
 
-    abstract prepare (): void
+    abstract prepare (): Promise<void>
 
     normalize(): CatalogNormalized {
         return {}

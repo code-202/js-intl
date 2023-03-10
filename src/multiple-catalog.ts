@@ -1,13 +1,14 @@
-import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
+import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 import { makeObservable, observable, when, computed, action } from 'mobx'
 
 export class MultipleCatalog implements Catalog {
     public catalogs: Catalog[]
     public status: CatalogStatus
     private _locale: string
+    private _prepared: boolean = false
 
     constructor (locale: string) {
-        makeObservable(this, {
+        makeObservable <MultipleCatalog, 'refreshStatus'>(this, {
             catalogs: observable,
             status: observable,
 
@@ -15,6 +16,7 @@ export class MultipleCatalog implements Catalog {
             domains: computed,
 
             addCatalog: action,
+            refreshStatus: action,
         })
 
         this.catalogs = []
@@ -23,19 +25,32 @@ export class MultipleCatalog implements Catalog {
         this._locale = locale
     }
 
-    addCatalog (catalog: Catalog) {
-        if (catalog.locale === this._locale) {
-            this.catalogs.push(catalog)
+    addCatalog (catalog: Catalog): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (catalog.locale === this._locale) {
+                this.catalogs.push(catalog)
 
-            this.refreshStatus()
-            when(() => catalog.status === 'ready', () => {
+                if (this._prepared) {
+                    catalog.prepare().then(() => {
+                        this.refreshStatus()
+                        resolve()
+                    }).catch(() => {
+                        this.refreshStatus()
+                        reject()
+                    })
+                } else {
+                    resolve()
+                }
+
                 this.refreshStatus()
-            })
 
-            if (this.status !== 'waiting') {
-                catalog.prepare()
+                if (this.status == 'ready') {
+                    resolve()
+                }
+            } else {
+                throw new BadLocaleCatalogError('bad locale, ' + this._locale + ' expected and ' + catalog.locale + ' received')
             }
-        }
+        })
     }
 
     getCatalogsByDomain (domain: string): Catalog[] {
@@ -71,29 +86,50 @@ export class MultipleCatalog implements Catalog {
             domains = domains.concat(catalog.domains)
         }
 
-        return domains
+        return domains.filter((item, index) => domains.indexOf(item) === index)
     }
 
     hasDomain (domain: string): boolean {
         return this.domains.indexOf(domain) >= 0
     }
 
-    prepare () {
-        this.status = 'updating'
+    prepare (): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this._prepared = true
+            if (this.catalogs.length) {
+                const promises : Promise<void>[] = []
+                action(() => {
+                    this.status = 'updating'
+                })()
+                for (const catalog of this.catalogs) {
+                    if (catalog.status != 'ready') {
+                        promises.push(catalog.prepare())
+                    }
+                }
 
-        if (this.catalogs.length) {
-            for (const catalog of this.catalogs) {
-                catalog.prepare()
+                Promise.all(promises).then(() => {
+                    this.refreshStatus()
+                    resolve()
+                }).catch(() => {
+                    this.refreshStatus()
+                    reject()
+                })
+            } else {
+                action(() => {
+                    this.status = 'ready'
+                })()
+                resolve()
             }
-        } else {
-            this.status = 'ready'
-        }
-
+        })
     }
 
     private refreshStatus () {
+        if (!this._prepared) {
+            return 'waiting'
+        }
+
         for (const catalog of this.catalogs) {
-            if (catalog.status === 'waiting' || catalog.status === 'updating') {
+            if (catalog.status !== 'ready') {
                 this.status = catalog.status
                 return
             }
@@ -116,17 +152,16 @@ export class MultipleCatalog implements Catalog {
     }
 
     denormalize(data: MultipleCatalogNormalized) {
-        try {
-            action(() => {
-                this.status = data.status
-            })()
+        action(() => {
+            this.status = data.status
+        })()
 
-            for (let k = 0; k < data.catalogs.length; k++) {
+        for (let k = 0; k < data.catalogs.length; k++) {
+            if (this.catalogs[k]) {
                 this.catalogs[k].denormalize(data.catalogs[k])
             }
-        } catch (e) {
-            console.error('Impossible to deserialize : bad data')
         }
+        this.refreshStatus()
     }
 }
 
