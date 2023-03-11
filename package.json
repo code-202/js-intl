@@ -1,6 +1,6 @@
 {
   "name": "@code-202/intl",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:code-202/js-intl.git",
@@ -31,7 +31,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@code-202/kernel": "^1.5.0",
+    "@code-202/kernel": "^1.7.0",
     "@code-202/loader": "^2.0.1",
     "@code-202/serializer": "^1.0.0",
     "mobx": "^6.8.0",
