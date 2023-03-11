@@ -6,9 +6,9 @@ import { AbstractCatalog } from './abstract-catalog'
 export class RemoteCatalog extends AbstractCatalog {
     public status: CatalogStatus = 'waiting'
     public messages: CatalogMessages = {}
-    private _url: string
+    private _url: string | (() => string)
 
-    constructor (locale: string, url: string, domains: string[] = ['default']) {
+    constructor (locale: string, url: string | (() => string), domains: string[] = ['default']) {
         super(locale, domains)
 
         makeObservable(this, {
@@ -23,7 +23,8 @@ export class RemoteCatalog extends AbstractCatalog {
     prepare (): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (this.status === 'waiting') {
-                const loader = new JsonLoader(this._url)
+                const url = typeof this._url === 'function' ? this._url() : this._url
+                const loader = new JsonLoader(url)
 
                 when(() => loader.status === 'done' || loader.status === 'error').then(action(() => {
                     if (loader.status === 'done') {

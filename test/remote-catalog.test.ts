@@ -72,7 +72,7 @@ test('error', () => {
 test('double prepare', () => {
     expect.assertions(2)
 
-    const catalog = new RemoteCatalog('fr', ':3006/fr.json')
+    const catalog = new RemoteCatalog('fr', () => ':3006/fr.json')
 
     const p = catalog.prepare().then(() => {
         expect(catalog.status).toBe('ready')
