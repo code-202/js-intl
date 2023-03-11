@@ -26,5 +26,5 @@ jobs:
 
         - name: Run the tests
           run: |
-            yarn test
+            yarn test --silent
 

@@ -1,5 +1,5 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { makeObservable, observable, action, computed, when, autorun } from 'mobx'
+import { makeObservable, observable, action, computed, autorun } from 'mobx'
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus, UnknownLocaleError } from './catalog'
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
 
@@ -47,8 +47,8 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
             if (mc) {
                 mc.addCatalog(catalog).then(() => {
                     resolve()
-                }).catch(() => {
-                    reject()
+                }).catch((err) => {
+                    reject(err)
                 })
             } else {
                 throw new BadLocaleCatalogError('bad locale, ' + catalog.locale + ' is not managed by this store')
@@ -74,9 +74,9 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
                 })()
 
                 resolve()
-            }).catch(() => {
+            }).catch((err) => {
                 action(() => this._status = 'error')()
-                reject()
+                reject(err)
             })
         })
     }

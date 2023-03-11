@@ -20,3 +20,5 @@ export declare class BadLocaleCatalogError extends IntlError {
 }
 export declare class UnknownLocaleError extends IntlError {
 }
+export declare class UnreachableRemoteError extends IntlError {
+}

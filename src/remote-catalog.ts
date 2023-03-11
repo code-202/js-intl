@@ -1,6 +1,6 @@
-import { Catalog, CatalogStatus, CatalogMessages, CatalogNormalized } from './catalog'
+import { CatalogStatus, CatalogMessages, CatalogNormalized, UnreachableRemoteError } from './catalog'
 import { JsonLoader } from '@code-202/loader'
-import { makeObservable, when, action, observable } from 'mobx'
+import { makeObservable, action, observable } from 'mobx'
 import { AbstractCatalog } from './abstract-catalog'
 
 export class RemoteCatalog extends AbstractCatalog {
@@ -24,29 +24,27 @@ export class RemoteCatalog extends AbstractCatalog {
         return new Promise<void>((resolve, reject) => {
             if (this.status === 'waiting') {
                 const url = typeof this._url === 'function' ? this._url() : this._url
-                const loader = new JsonLoader(url)
+                const loader = new JsonLoader(url, false)
 
-                when(() => loader.status === 'done' || loader.status === 'error').then(action(() => {
-                    if (loader.status === 'done') {
+                loader.load().then(() => {
+                    action(() => {
                         this.messages = loader.responseData
-
-                        action(() => {
-                            this.status = 'ready'
-                        })()
-                        resolve()
-                    } else {
-                        action(() => {
-                            this.status = 'error'
-                        })()
-                        reject()
-                    }
-                }))
+                        this.status = 'ready'
+                    })()
+                    resolve()
+                }).catch((err) => {
+                    action(() => {
+                        this.status = 'error'
+                    })()
+                    console.error(`${url} is unreachable`)
+                    reject(new UnreachableRemoteError(`${url} is unreachable`))
+                })
 
                 action(() => {
                     this.status = 'updating'
                 })()
             } else {
-                reject()
+                reject('catalog is already ' + this.status)
             }
         })
     }

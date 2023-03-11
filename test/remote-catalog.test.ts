@@ -1,6 +1,6 @@
 import { Denormalizer, Normalizer } from '@code-202/serializer'
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
-import { RemoteCatalog  } from '../src'
+import { CatalogComponent, RemoteCatalog  } from '../src'
 import { DenormalizeError } from '../src/catalog'
 
 import app from './server'
@@ -54,19 +54,22 @@ test('denormalize', () => {
 })
 
 test('error', () => {
-    expect.assertions(5)
+    expect.assertions(6)
 
     const catalog = new RemoteCatalog('fr', ':3006/404')
 
     expect(catalog.locale).toBe('fr')
     expect(catalog.status).toBe('waiting')
     expect(catalog.messages).toStrictEqual({})
-    const p = catalog.prepare().catch(() => {
+
+    const p1 = catalog.prepare()
+    const p2 = expect(p1).rejects.toThrow(CatalogComponent.UnreachableRemoteError)
+    const p3 = p1.catch(() => {
         expect(catalog.status).toBe('error')
     })
     expect(catalog.status).toBe('updating')
 
-    return p
+    return Promise.allSettled([p1, p2, p3])
 })
 
 test('double prepare', () => {

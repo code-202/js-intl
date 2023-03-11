@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UnknownLocaleError = exports.BadLocaleCatalogError = exports.DenormalizeError = exports.IntlError = void 0;
+exports.UnreachableRemoteError = exports.UnknownLocaleError = exports.BadLocaleCatalogError = exports.DenormalizeError = exports.IntlError = void 0;
 class IntlError extends Error {
 }
 exports.IntlError = IntlError;
@@ -13,3 +13,6 @@ exports.BadLocaleCatalogError = BadLocaleCatalogError;
 class UnknownLocaleError extends IntlError {
 }
 exports.UnknownLocaleError = UnknownLocaleError;
+class UnreachableRemoteError extends IntlError {
+}
+exports.UnreachableRemoteError = UnreachableRemoteError;

@@ -29,9 +29,9 @@ class MultipleCatalog {
                     catalog.prepare().then(() => {
                         this.refreshStatus();
                         resolve();
-                    }).catch(() => {
+                    }).catch((err) => {
                         this.refreshStatus();
-                        reject();
+                        reject(err);
                     });
                 }
                 else {
@@ -92,9 +92,9 @@ class MultipleCatalog {
                 Promise.all(promises).then(() => {
                     this.refreshStatus();
                     resolve();
-                }).catch(() => {
+                }).catch((err) => {
                     this.refreshStatus();
-                    reject();
+                    reject(err);
                 });
             }
             else {

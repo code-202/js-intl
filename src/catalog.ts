@@ -21,3 +21,4 @@ export class IntlError extends Error {}
 export class DenormalizeError extends IntlError {}
 export class BadLocaleCatalogError extends IntlError {}
 export class UnknownLocaleError extends IntlError {}
+export class UnreachableRemoteError extends IntlError {}

@@ -1,5 +1,5 @@
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
-import { makeObservable, observable, when, computed, action } from 'mobx'
+import { makeObservable, observable, computed, action } from 'mobx'
 
 export class MultipleCatalog implements Catalog {
     public catalogs: Catalog[]
@@ -34,9 +34,9 @@ export class MultipleCatalog implements Catalog {
                     catalog.prepare().then(() => {
                         this.refreshStatus()
                         resolve()
-                    }).catch(() => {
+                    }).catch((err) => {
                         this.refreshStatus()
-                        reject()
+                        reject(err)
                     })
                 } else {
                     resolve()
@@ -110,9 +110,9 @@ export class MultipleCatalog implements Catalog {
                 Promise.all(promises).then(() => {
                     this.refreshStatus()
                     resolve()
-                }).catch(() => {
+                }).catch((err) => {
                     this.refreshStatus()
-                    reject()
+                    reject(err)
                 })
             } else {
                 action(() => {

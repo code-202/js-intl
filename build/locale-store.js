@@ -39,8 +39,8 @@ class LocaleStore {
             if (mc) {
                 mc.addCatalog(catalog).then(() => {
                     resolve();
-                }).catch(() => {
-                    reject();
+                }).catch((err) => {
+                    reject(err);
                 });
             }
             else {
@@ -62,9 +62,9 @@ class LocaleStore {
                     this._status = 'ready';
                 })();
                 resolve();
-            }).catch(() => {
+            }).catch((err) => {
                 (0, mobx_1.action)(() => this._status = 'error')();
-                reject();
+                reject(err);
             });
         });
     }
