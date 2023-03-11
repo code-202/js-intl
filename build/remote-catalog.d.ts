@@ -4,7 +4,7 @@ export declare class RemoteCatalog extends AbstractCatalog {
     status: CatalogStatus;
     messages: CatalogMessages;
     private _url;
-    constructor(locale: string, url: string, domains?: string[]);
+    constructor(locale: string, url: string | (() => string), domains?: string[]);
     prepare(): Promise<void>;
     normalize(): RemoteCatalogNormalized;
     denormalize(data: RemoteCatalogNormalized): void;

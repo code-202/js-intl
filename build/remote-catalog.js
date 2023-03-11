@@ -19,7 +19,8 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     prepare() {
         return new Promise((resolve, reject) => {
             if (this.status === 'waiting') {
-                const loader = new loader_1.JsonLoader(this._url);
+                const url = typeof this._url === 'function' ? this._url() : this._url;
+                const loader = new loader_1.JsonLoader(url);
                 (0, mobx_1.when)(() => loader.status === 'done' || loader.status === 'error').then((0, mobx_1.action)(() => {
                     if (loader.status === 'done') {
                         this.messages = loader.responseData;
