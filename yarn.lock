@@ -307,14 +307,13 @@
     "@code-202/serializer" "^1.0.0"
     superagent "^8.0.9"
 
-"@code-202/kernel@^1.7.0":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@code-202/kernel/-/kernel-1.7.1.tgz#a8edc1c74e9b5f8cc5042c7d9bde30c7fb1badb2"
-  integrity sha512-L5R8HzxrsWAvtuz8pbnUKhx83sTJKsiwuv3t6O5Cs78+aKBNj0MQ/EY2vagdvEtC2mR+hMBG2X/aVD4L+dmwVg==
+"@code-202/kernel@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@code-202/kernel/-/kernel-2.0.0.tgz#b06d438b2a3a8b06f242aa0e5ea2efb0f5ea7dd0"
+  integrity sha512-zx9AdXp0BYHBV6QP+6k5KnSVnSO6OGZKF+wPFfq0kS8z//x6tV/SZ446KP9qp2V/R/KYhZ1UGRvCj9sFeyfMMA==
   dependencies:
     "@code-202/serializer" "^1.0.0"
     lodash.has "^4.5.2"
-    mobx "^6.8.0"
 
 "@code-202/loader@^2.0.1":
   version "2.0.1"
