@@ -18,6 +18,9 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
             domains: computed,
             activeDomains: computed,
+            locale: computed,
+            status: computed,
+            messages: computed,
 
             addCatalog: action,
         })

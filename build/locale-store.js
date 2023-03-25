@@ -16,6 +16,9 @@ class LocaleStore {
             _messages: mobx_1.observable,
             domains: mobx_1.computed,
             activeDomains: mobx_1.computed,
+            locale: mobx_1.computed,
+            status: mobx_1.computed,
+            messages: mobx_1.computed,
             addCatalog: mobx_1.action,
         });
         for (const locale of locales) {
