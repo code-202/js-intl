@@ -5,6 +5,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     private _status;
     private _locale;
     private _messages;
+    private _disposer;
     catalogs: MultipleCatalog[];
     constructor(locales: string[]);
     get locale(): string;

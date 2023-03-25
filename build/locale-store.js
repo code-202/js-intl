@@ -8,6 +8,7 @@ class LocaleStore {
     _status = 'waiting';
     _locale = '';
     _messages = {};
+    _disposer = null;
     catalogs = [];
     constructor(locales) {
         (0, mobx_1.makeObservable)(this, {
@@ -53,6 +54,9 @@ class LocaleStore {
     }
     changeLocale(locale) {
         return new Promise((resolve, reject) => {
+            if (this._disposer) {
+                this._disposer();
+            }
             const catalog = this.getCatalog(locale);
             if (!catalog) {
                 throw new catalog_1.UnknownLocaleError('bad locale, ' + locale + ' is not managed by this store');
@@ -68,6 +72,9 @@ class LocaleStore {
             }).catch((err) => {
                 (0, mobx_1.action)(() => this._status = 'error')();
                 reject(err);
+            });
+            this._disposer = (0, mobx_1.reaction)(() => catalog.messages, (messages) => {
+                (0, mobx_1.action)(() => this._messages = messages)();
             });
         });
     }

@@ -1,5 +1,5 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { makeObservable, observable, action, computed, autorun } from 'mobx'
+import { makeObservable, observable, action, computed, autorun, reaction, IReactionDisposer } from 'mobx'
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus, UnknownLocaleError } from './catalog'
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
 
@@ -7,6 +7,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
     private _status: CatalogStatus = 'waiting'
     private _locale: string = ''
     private _messages: CatalogMessages = {}
+    private _disposer: IReactionDisposer | null = null
 
     catalogs: MultipleCatalog[] = []
 
@@ -61,6 +62,10 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
     changeLocale (locale: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
+            if (this._disposer) {
+                this._disposer()
+            }
+
             const catalog = this.getCatalog(locale)
 
             if (!catalog) {
@@ -80,6 +85,10 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
             }).catch((err) => {
                 action(() => this._status = 'error')()
                 reject(err)
+            })
+
+            this._disposer = reaction(() => catalog.messages, (messages) => {
+                action(() => this._messages = messages)()
             })
         })
     }

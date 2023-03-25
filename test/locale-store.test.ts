@@ -85,7 +85,7 @@ test('change locale with bad catalog', async () => {
 })
 
 test('domains', async () => {
-    expect.assertions(18)
+    expect.assertions(21)
 
     const store = new LocaleStore(['fr', 'en'])
 
@@ -114,13 +114,16 @@ test('domains', async () => {
     expect(store.getCatalogsByDomain('help')).toStrictEqual([cfh])
     expect(store.messages).toStrictEqual({'app.title': 'title', 'app.sub': 'sub', 'help.title': 'help'})
 
+    await store.addCatalog(new SimpleCatalog('fr', { 'security.title': 'warning' }, ['security']))
+    expect(store.messages).toStrictEqual({'app.title': 'title', 'app.sub': 'sub', 'help.title': 'help', 'security.title': 'warning'})
 
     expect(store.hasDomain('default')).toBe(true)
     expect(store.hasDomain('app')).toBe(true)
     expect(store.hasDomain('help')).toBe(true)
     expect(store.hasDomain('tools')).toBe(false)
+    expect(store.hasDomain('security')).toBe(true)
 
-    expect(store.activeDomains).toStrictEqual(['default', 'app', 'help'])
+    expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'security'])
 
     await store.changeLocale('en')
     expect(store.getCatalogsByDomain('default')).toStrictEqual([ced])
@@ -132,6 +135,7 @@ test('domains', async () => {
     const p = store.addCatalog(new RemoteCatalog('en', ':3008/en.app.json', ['foo'])).then(() => {
         expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools', 'foo'])
         expect(store.hasActiveDomain('foo')).toBe(true)
+        expect(store.messages).toStrictEqual({'welcome': 'Welcome'})
     })
 
     expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools'])
