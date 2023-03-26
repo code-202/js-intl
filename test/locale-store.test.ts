@@ -85,7 +85,7 @@ test('change locale with bad catalog', async () => {
 })
 
 test('domains', async () => {
-    expect.assertions(21)
+    expect.assertions(25)
 
     const store = new LocaleStore(['fr', 'en'])
 
@@ -123,9 +123,9 @@ test('domains', async () => {
     expect(store.hasDomain('tools')).toBe(false)
     expect(store.hasDomain('security')).toBe(true)
 
-    expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'security'])
-
+    expect(store.activeDomains).toStrictEqual(['default', 'app', 'help'])
     await store.changeLocale('en')
+    expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools'])
     expect(store.getCatalogsByDomain('default')).toStrictEqual([ced])
     expect(store.getCatalogsByDomain('app')).toStrictEqual([cea])
     expect(store.getCatalogsByDomain('help')).toStrictEqual([ceh])
@@ -133,12 +133,17 @@ test('domains', async () => {
     expect(store.hasDomain('tools')).toBe(true)
 
     const p = store.addCatalog(new RemoteCatalog('en', ':3008/en.app.json', ['foo'])).then(() => {
+        expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools'])
+        expect(store.hasActiveDomain('foo')).toBe(false)
+        store.refreshActiveDomains()
         expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools', 'foo'])
         expect(store.hasActiveDomain('foo')).toBe(true)
         expect(store.messages).toStrictEqual({'welcome': 'Welcome'})
     })
 
     expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools'])
+    expect(store.hasActiveDomain('foo')).toBe(false)
+    store.refreshActiveDomains()
     expect(store.hasActiveDomain('foo')).toBe(false)
 
     return p
@@ -293,7 +298,7 @@ test('denormalize', async () => {
 })
 
 test('ssr', async () => {
-    expect.assertions(9)
+    expect.assertions(10)
 
     const normalizer = new Normalizer();
     const denormalizer = new Denormalizer();
@@ -323,6 +328,8 @@ test('ssr', async () => {
     expect(storeClient.hasDomain('account')).toBe(false)
 
     const p = storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.account.json', ['account'])).then(() => {
+        expect(storeClient.hasActiveDomain('account')).toBe(false)
+        storeClient.refreshActiveDomains()
         expect(storeClient.hasActiveDomain('account')).toBe(true)
         expect(storeClient.messages).toStrictEqual({
             cf1: '1fc',
@@ -333,7 +340,7 @@ test('ssr', async () => {
     })
 
     expect(storeClient.hasDomain('account')).toBe(true)
-    expect(storeClient.hasActiveDomain('account')).toBe(true)
+    expect(storeClient.hasActiveDomain('account')).toBe(false)
     expect(storeClient.messages).toStrictEqual({
         cf1: '1fc',
         foo: 'bar',

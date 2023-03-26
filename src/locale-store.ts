@@ -8,14 +8,16 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
     private _locale: string = ''
     private _messages: CatalogMessages = {}
     private _disposer: IReactionDisposer | null = null
+    private _activeDomains: string[] = []
 
     catalogs: MultipleCatalog[] = []
 
     constructor (locales: string[]) {
-        makeObservable <LocaleStore, '_status' | '_locale' | '_messages'>(this, {
+        makeObservable <LocaleStore, '_status' | '_locale' | '_messages' | '_activeDomains'>(this, {
             _status: observable,
             _locale: observable,
             _messages: observable,
+            _activeDomains: observable,
 
             domains: computed,
             activeDomains: computed,
@@ -81,6 +83,8 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
                     this._status = 'ready'
                 })()
 
+                this.refreshActiveDomains()
+
                 resolve()
             }).catch((err) => {
                 action(() => this._status = 'error')()
@@ -126,7 +130,11 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
     }
 
     get activeDomains (): string[] {
-        const activeDomains: string[] = []
+        return this._activeDomains
+    }
+
+    refreshActiveDomains (): void {
+        this._activeDomains.splice(0)
 
         for (const domain of this.domains) {
             const catalogs = this.getCatalogsByDomain(domain)
@@ -140,11 +148,9 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
             }
 
             if (ready) {
-                activeDomains.push(domain)
+                this._activeDomains.push(domain)
             }
         }
-
-        return activeDomains
     }
 
     hasActiveDomain (domain: string): boolean {

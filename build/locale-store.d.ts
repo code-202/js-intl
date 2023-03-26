@@ -6,6 +6,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     private _locale;
     private _messages;
     private _disposer;
+    private _activeDomains;
     catalogs: MultipleCatalog[];
     constructor(locales: string[]);
     get locale(): string;
@@ -18,6 +19,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     get domains(): string[];
     hasDomain(domain: string): boolean;
     get activeDomains(): string[];
+    refreshActiveDomains(): void;
     hasActiveDomain(domain: string): boolean;
     normalize(): LocaleStoreNormalized;
     denormalize(data: LocaleStoreNormalized): void;
