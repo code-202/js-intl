@@ -47,12 +47,6 @@ class MobxIntlProvider extends React.Component {
         return (React.createElement(react_intl_1.IntlProvider, { locale: this.locale.locale ? this.locale.locale : 'en', messages: this.locale && this.locale.messages ? this.locale.messages : {}, onError: loader_1.Manager.Manager.contentStrategy === 'show' ? () => { } : undefined },
             React.createElement(catalog_awaiter_1.default, { domain: domain }, this.props.children)));
     }
-    componentDidMount() {
-        this.locale.refreshActiveDomains();
-    }
-    componentDidUpdate() {
-        this.locale.refreshActiveDomains();
-    }
 }
 exports.MobxIntlProvider = MobxIntlProvider;
 exports.default = (0, mobx_react_1.observer)(MobxIntlProvider);
