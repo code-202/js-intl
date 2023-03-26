@@ -291,3 +291,55 @@ test('denormalize', async () => {
         welcome: 'Welcome',
     })
 })
+
+test('ssr', async () => {
+    expect.assertions(9)
+
+    const normalizer = new Normalizer();
+    const denormalizer = new Denormalizer();
+
+    const storeServer = new LocaleStore(['fr'])
+
+    await storeServer.addCatalog(new SimpleCatalog('fr', {cf1: '1fc'}))
+    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.json'))
+    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
+    await storeServer.changeLocale('fr')
+    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.account.json', ['account']))
+
+    const normalized = await normalizer.normalize(storeServer)
+
+    const storeClient = new LocaleStore(['fr'])
+
+    await storeClient.addCatalog(new SimpleCatalog('fr', {cf1: '1fc'}))
+    await storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.json'))
+    await storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
+    await storeClient.changeLocale('fr')
+
+    await denormalizer.denormalize(storeClient, normalized)
+
+    expect(storeClient.hasDomain('default')).toBe(true)
+    expect(storeClient.hasDomain('app')).toBe(true)
+    expect(storeClient.hasDomain('help')).toBe(false)
+    expect(storeClient.hasDomain('account')).toBe(false)
+
+    const p = storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.account.json', ['account'])).then(() => {
+        expect(storeClient.hasActiveDomain('account')).toBe(true)
+        expect(storeClient.messages).toStrictEqual({
+            cf1: '1fc',
+            foo: 'bar',
+            welcome: 'Bienvenue',
+            account: 'Mon compte',
+        })
+    })
+
+    expect(storeClient.hasDomain('account')).toBe(true)
+    expect(storeClient.hasActiveDomain('account')).toBe(true)
+    expect(storeClient.messages).toStrictEqual({
+        cf1: '1fc',
+        foo: 'bar',
+        welcome: 'Bienvenue',
+        account: 'Mon compte',
+    })
+
+    return p
+})

@@ -6,6 +6,7 @@ export class MultipleCatalog implements Catalog {
     public status: CatalogStatus
     private _locale: string
     private _prepared: boolean = false
+    private _normalizedRemaining: CatalogNormalized[] = []
 
     constructor (locale: string) {
         makeObservable <MultipleCatalog, 'refreshStatus'>(this, {
@@ -29,6 +30,11 @@ export class MultipleCatalog implements Catalog {
         return new Promise<void>((resolve, reject) => {
             if (catalog.locale === this._locale) {
                 this.catalogs.push(catalog)
+
+                const n = this._normalizedRemaining.shift()
+                if (n) {
+                    catalog.denormalize(n)
+                }
 
                 if (this._prepared) {
                     catalog.prepare().then(() => {
@@ -159,6 +165,8 @@ export class MultipleCatalog implements Catalog {
         for (let k = 0; k < data.catalogs.length; k++) {
             if (this.catalogs[k]) {
                 this.catalogs[k].denormalize(data.catalogs[k])
+            } else {
+                this._normalizedRemaining.push(data.catalogs[k])
             }
         }
         this.refreshStatus()

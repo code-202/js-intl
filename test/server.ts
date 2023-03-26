@@ -14,6 +14,10 @@ app.get('/fr.app.json', (req: any, res: any) => {
     res.send({ "welcome": "Bienvenue"})
 })
 
+app.get('/fr.account.json', (req: any, res: any) => {
+    res.send({ "account": "Mon compte"})
+})
+
 app.get('/en.app.json', (req: any, res: any) => {
     res.send({ "welcome": "Welcome"})
 })

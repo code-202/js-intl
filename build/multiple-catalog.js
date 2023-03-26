@@ -8,6 +8,7 @@ class MultipleCatalog {
     status;
     _locale;
     _prepared = false;
+    _normalizedRemaining = [];
     constructor(locale) {
         (0, mobx_1.makeObservable)(this, {
             catalogs: mobx_1.observable,
@@ -25,6 +26,10 @@ class MultipleCatalog {
         return new Promise((resolve, reject) => {
             if (catalog.locale === this._locale) {
                 this.catalogs.push(catalog);
+                const n = this._normalizedRemaining.shift();
+                if (n) {
+                    catalog.denormalize(n);
+                }
                 if (this._prepared) {
                     catalog.prepare().then(() => {
                         this.refreshStatus();
@@ -134,6 +139,9 @@ class MultipleCatalog {
         for (let k = 0; k < data.catalogs.length; k++) {
             if (this.catalogs[k]) {
                 this.catalogs[k].denormalize(data.catalogs[k]);
+            }
+            else {
+                this._normalizedRemaining.push(data.catalogs[k]);
             }
         }
         this.refreshStatus();

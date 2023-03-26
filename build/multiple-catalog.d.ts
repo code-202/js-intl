@@ -4,6 +4,7 @@ export declare class MultipleCatalog implements Catalog {
     status: CatalogStatus;
     private _locale;
     private _prepared;
+    private _normalizedRemaining;
     constructor(locale: string);
     addCatalog(catalog: Catalog): Promise<void>;
     getCatalogsByDomain(domain: string): Catalog[];

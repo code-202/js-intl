@@ -157,3 +157,42 @@ test('denormalize', () => {
     expect(catalog.messages).toStrictEqual({foo: 'bar', welcome: 'Bienvenue'})
     expect(catalog.status).toBe('ready')
 })
+
+test('ssr', async () => {
+    expect.assertions(7)
+
+    const normalizer = new Normalizer();
+    const denormalizer = new Denormalizer();
+
+    const catalogServer: MultipleCatalog = new MultipleCatalog('fr')
+    await catalogServer.addCatalog(new SimpleCatalog('fr', {simple: 'catalog'}))
+    await catalogServer.addCatalog(new RemoteCatalog('fr', ':3007/fr.json'))
+    await catalogServer.addCatalog(new RemoteCatalog('fr', ':3007/fr.app.json', ['app']))
+    await catalogServer.addCatalog(new RemoteCatalog('fr', ':3007/fr.account.json', ['account']))
+    await catalogServer.prepare()
+
+    const normalized = await normalizer.normalize(catalogServer)
+
+    expect(catalogServer.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
+
+    const catalogClient: MultipleCatalog = new MultipleCatalog('fr')
+    await catalogClient.addCatalog(new SimpleCatalog('fr', {simple: 'catalog'}))
+    await catalogClient.addCatalog(new RemoteCatalog('fr', ':3007/fr.json'))
+    await catalogClient.addCatalog(new RemoteCatalog('fr', ':3007/fr.app.json', ['app']))
+
+    await denormalizer.denormalize(catalogClient, normalized)
+    await catalogClient.prepare()
+
+    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue'})
+    expect(catalogClient.domains).toStrictEqual(['default', 'app'])
+
+    const p = catalogClient.addCatalog(new RemoteCatalog('fr', ':3007/fr.account.json', ['account'])).then(() => {
+        expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
+        expect(catalogClient.domains).toStrictEqual(['default', 'app', 'account'])
+    })
+
+    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
+    expect(catalogClient.domains).toStrictEqual(['default', 'app', 'account'])
+
+    return p
+})
