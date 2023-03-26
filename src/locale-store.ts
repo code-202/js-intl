@@ -26,6 +26,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
             messages: computed,
 
             addCatalog: action,
+            refreshActiveDomains: action,
         })
 
         for (const locale of locales) {

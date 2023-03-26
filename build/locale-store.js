@@ -23,6 +23,7 @@ class LocaleStore {
             status: mobx_1.computed,
             messages: mobx_1.computed,
             addCatalog: mobx_1.action,
+            refreshActiveDomains: mobx_1.action,
         });
         for (const locale of locales) {
             if (this.getCatalog(locale) === null) {

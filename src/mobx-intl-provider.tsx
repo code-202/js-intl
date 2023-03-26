@@ -42,6 +42,14 @@ export class MobxIntlProvider extends React.Component<Props, State> {
             </IntlProvider>
         )
     }
+
+    componentDidMount(): void {
+        this.locale.refreshActiveDomains()
+    }
+
+    componentDidUpdate(): void {
+        this.locale.refreshActiveDomains()
+    }
 }
 
 export default observer(MobxIntlProvider)
