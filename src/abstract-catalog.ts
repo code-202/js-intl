@@ -1,12 +1,18 @@
 import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 
 export abstract class AbstractCatalog implements Catalog {
+    private _id: string
     private _locale: string
     private _domains: string[]
 
-    constructor (locale: string, domains: string[] = ['default']) {
+    constructor (locale: string, domains: string[] = ['default'], id: string = '') {
+        this._id = id || locale+'.'+domains.join('.')
         this._locale = locale
         this._domains = domains
+    }
+
+    get id (): string {
+        return this._id
     }
 
     get locale () {

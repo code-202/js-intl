@@ -9,8 +9,8 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     status = 'waiting';
     messages = {};
     _url;
-    constructor(locale, url, domains = ['default']) {
-        super(locale, domains);
+    constructor(locale, url, domains = ['default'], id = '') {
+        super(locale, domains, id);
         (0, mobx_1.makeObservable)(this, {
             status: mobx_1.observable,
             messages: mobx_1.observable,

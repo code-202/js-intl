@@ -8,8 +8,8 @@ export class RemoteCatalog extends AbstractCatalog {
     public messages: CatalogMessages = {}
     private _url: string | (() => string)
 
-    constructor (locale: string, url: string | (() => string), domains: string[] = ['default']) {
-        super(locale, domains)
+    constructor (locale: string, url: string | (() => string), domains: string[] = ['default'], id: string = '') {
+        super(locale, domains, id)
 
         makeObservable(this, {
             status: observable,

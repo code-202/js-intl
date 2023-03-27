@@ -15,7 +15,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     get status(): CatalogStatus;
     get messages(): CatalogMessages;
     get intl(): IntlShape;
-    addCatalog(catalog: Catalog): Promise<void>;
+    add(catalog: Catalog): Promise<void>;
     changeLocale(locale: string): Promise<void>;
     getCatalog(locale: string): MultipleCatalog | null;
     getCatalogsByDomain(domain: string): Catalog[];

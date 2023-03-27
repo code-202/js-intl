@@ -1,14 +1,15 @@
-import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
+import { AlreadyUsedCatalogError, BadLocaleCatalogError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 import { makeObservable, observable, computed, action } from 'mobx'
 
 export class MultipleCatalog implements Catalog {
     public catalogs: Catalog[]
     public status: CatalogStatus
+    private _id: string
     private _locale: string
     private _prepared: boolean = false
     private _normalizedRemaining: CatalogNormalized[] = []
 
-    constructor (locale: string) {
+    constructor (locale: string, id: string = '') {
         makeObservable <MultipleCatalog, 'refreshStatus'>(this, {
             catalogs: observable,
             status: observable,
@@ -16,47 +17,70 @@ export class MultipleCatalog implements Catalog {
             messages: computed,
             domains: computed,
 
-            addCatalog: action,
+            add: action,
             refreshStatus: action,
         })
 
+        this._id = id || 'multi.'+locale
         this.catalogs = []
         this.status = 'waiting'
 
         this._locale = locale
     }
 
-    addCatalog (catalog: Catalog): Promise<void> {
+    get id (): string {
+        return this._id
+    }
+
+    add (catalog: Catalog, soft: boolean = false): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            if (catalog.locale === this._locale) {
-                this.catalogs.push(catalog)
-
-                const n = this._normalizedRemaining.shift()
-                if (n) {
-                    catalog.denormalize(n)
-                }
-
-                if (this._prepared) {
-                    catalog.prepare().then(() => {
-                        this.refreshStatus()
-                        resolve()
-                    }).catch((err) => {
-                        this.refreshStatus()
-                        reject(err)
-                    })
-                } else {
-                    resolve()
-                }
-
-                this.refreshStatus()
-
-                if (this.status == 'ready') {
-                    resolve()
-                }
-            } else {
+            if (catalog.locale != this._locale) {
                 throw new BadLocaleCatalogError('bad locale, ' + this._locale + ' expected and ' + catalog.locale + ' received')
             }
+
+            if (this.hasCatalog(catalog.id)) {
+                if (soft) {
+                    resolve()
+                    return
+                }
+                throw new AlreadyUsedCatalogError('catalog is already used : ' + catalog.id)
+            }
+
+            this.catalogs.push(catalog)
+
+            const n = this._normalizedRemaining.shift()
+            if (n) {
+                catalog.denormalize(n)
+            }
+
+            if (this._prepared) {
+                catalog.prepare().then(() => {
+                    this.refreshStatus()
+                    resolve()
+                }).catch((err) => {
+                    this.refreshStatus()
+                    reject(err)
+                })
+            } else {
+                resolve()
+            }
+
+            this.refreshStatus()
+
+            if (this.status == 'ready') {
+                resolve()
+            }
         })
+    }
+
+    hasCatalog (id: string): boolean {
+        for (const catalog of this.catalogs) {
+            if (catalog.id == id) {
+                return true
+            }
+        }
+
+        return false
     }
 
     getCatalogsByDomain (domain: string): Catalog[] {

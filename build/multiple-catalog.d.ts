@@ -2,11 +2,14 @@ import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './ca
 export declare class MultipleCatalog implements Catalog {
     catalogs: Catalog[];
     status: CatalogStatus;
+    private _id;
     private _locale;
     private _prepared;
     private _normalizedRemaining;
-    constructor(locale: string);
-    addCatalog(catalog: Catalog): Promise<void>;
+    constructor(locale: string, id?: string);
+    get id(): string;
+    add(catalog: Catalog, soft?: boolean): Promise<void>;
+    hasCatalog(id: string): boolean;
     getCatalogsByDomain(domain: string): Catalog[];
     get locale(): string;
     get messages(): CatalogMessages;

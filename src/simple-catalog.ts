@@ -4,8 +4,8 @@ import { AbstractCatalog } from './abstract-catalog'
 export class SimpleCatalog extends AbstractCatalog {
     private _messages: CatalogMessages
 
-    constructor (locale: string, messages: CatalogMessages, domains: string[] = ['default']) {
-        super(locale, domains)
+    constructor (locale: string, messages: CatalogMessages, domains: string[] = ['default'], id: string = '') {
+        super(locale, domains, id)
         this._messages = messages
     }
 

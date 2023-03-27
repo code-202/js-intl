@@ -4,8 +4,8 @@ exports.SimpleCatalog = void 0;
 const abstract_catalog_1 = require("./abstract-catalog");
 class SimpleCatalog extends abstract_catalog_1.AbstractCatalog {
     _messages;
-    constructor(locale, messages, domains = ['default']) {
-        super(locale, domains);
+    constructor(locale, messages, domains = ['default'], id = '') {
+        super(locale, domains, id);
         this._messages = messages;
     }
     get messages() {

@@ -1,8 +1,10 @@
 import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog';
 export declare abstract class AbstractCatalog implements Catalog {
+    private _id;
     private _locale;
     private _domains;
-    constructor(locale: string, domains?: string[]);
+    constructor(locale: string, domains?: string[], id?: string);
+    get id(): string;
     get locale(): string;
     get domains(): string[];
     hasDomain(domain: string): boolean;

@@ -23,7 +23,7 @@ class LocaleStore {
             locale: mobx_1.computed,
             status: mobx_1.computed,
             messages: mobx_1.computed,
-            addCatalog: mobx_1.action,
+            add: mobx_1.action,
         });
         for (const locale of locales) {
             if (this.getCatalog(locale) === null) {
@@ -48,11 +48,11 @@ class LocaleStore {
     get intl() {
         return this._intl;
     }
-    addCatalog(catalog) {
+    add(catalog) {
         return new Promise((resolve, reject) => {
             const mc = this.getCatalog(catalog.locale);
             if (mc) {
-                mc.addCatalog(catalog).then(() => {
+                mc.add(catalog).then(() => {
                     resolve();
                 }).catch((err) => {
                     reject(err);

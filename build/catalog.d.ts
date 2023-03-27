@@ -3,6 +3,7 @@ export interface CatalogMessages extends Record<string, string> {
 }
 export type CatalogStatus = 'waiting' | 'updating' | 'ready' | 'error';
 export interface Catalog extends Normalizable<CatalogNormalized>, Denormalizable<CatalogNormalized> {
+    id: string;
     locale: string;
     domains: string[];
     hasDomain(domain: string): boolean;
@@ -14,9 +15,11 @@ export interface CatalogNormalized {
 }
 export declare class IntlError extends Error {
 }
-export declare class DenormalizeError extends IntlError {
+export declare class AlreadyUsedCatalogError extends IntlError {
 }
 export declare class BadLocaleCatalogError extends IntlError {
+}
+export declare class DenormalizeError extends IntlError {
 }
 export declare class UnknownLocaleError extends IntlError {
 }

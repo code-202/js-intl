@@ -26,7 +26,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
             status: computed,
             messages: computed,
 
-            addCatalog: action,
+            add: action,
         })
 
         for (const locale of locales) {
@@ -59,11 +59,11 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return this._intl
     }
 
-    addCatalog (catalog: Catalog): Promise<void> {
+    add (catalog: Catalog): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const mc = this.getCatalog(catalog.locale)
             if (mc) {
-                mc.addCatalog(catalog).then(() => {
+                mc.add(catalog).then(() => {
                     resolve()
                 }).catch((err) => {
                     reject(err)

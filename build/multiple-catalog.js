@@ -6,51 +6,69 @@ const mobx_1 = require("mobx");
 class MultipleCatalog {
     catalogs;
     status;
+    _id;
     _locale;
     _prepared = false;
     _normalizedRemaining = [];
-    constructor(locale) {
+    constructor(locale, id = '') {
         (0, mobx_1.makeObservable)(this, {
             catalogs: mobx_1.observable,
             status: mobx_1.observable,
             messages: mobx_1.computed,
             domains: mobx_1.computed,
-            addCatalog: mobx_1.action,
+            add: mobx_1.action,
             refreshStatus: mobx_1.action,
         });
+        this._id = id || 'multi.' + locale;
         this.catalogs = [];
         this.status = 'waiting';
         this._locale = locale;
     }
-    addCatalog(catalog) {
+    get id() {
+        return this._id;
+    }
+    add(catalog, soft = false) {
         return new Promise((resolve, reject) => {
-            if (catalog.locale === this._locale) {
-                this.catalogs.push(catalog);
-                const n = this._normalizedRemaining.shift();
-                if (n) {
-                    catalog.denormalize(n);
-                }
-                if (this._prepared) {
-                    catalog.prepare().then(() => {
-                        this.refreshStatus();
-                        resolve();
-                    }).catch((err) => {
-                        this.refreshStatus();
-                        reject(err);
-                    });
-                }
-                else {
-                    resolve();
-                }
-                this.refreshStatus();
-                if (this.status == 'ready') {
-                    resolve();
-                }
-            }
-            else {
+            if (catalog.locale != this._locale) {
                 throw new catalog_1.BadLocaleCatalogError('bad locale, ' + this._locale + ' expected and ' + catalog.locale + ' received');
             }
+            if (this.hasCatalog(catalog.id)) {
+                if (soft) {
+                    resolve();
+                    return;
+                }
+                throw new catalog_1.AlreadyUsedCatalogError('catalog is already used : ' + catalog.id);
+            }
+            this.catalogs.push(catalog);
+            const n = this._normalizedRemaining.shift();
+            if (n) {
+                catalog.denormalize(n);
+            }
+            if (this._prepared) {
+                catalog.prepare().then(() => {
+                    this.refreshStatus();
+                    resolve();
+                }).catch((err) => {
+                    this.refreshStatus();
+                    reject(err);
+                });
+            }
+            else {
+                resolve();
+            }
+            this.refreshStatus();
+            if (this.status == 'ready') {
+                resolve();
+            }
         });
+    }
+    hasCatalog(id) {
+        for (const catalog of this.catalogs) {
+            if (catalog.id == id) {
+                return true;
+            }
+        }
+        return false;
     }
     getCatalogsByDomain(domain) {
         const catalogs = [];

@@ -21,7 +21,7 @@ test('simple add', () => {
     expect(localeStore.domains).toStrictEqual([])
     expect(localeStore.messages).toStrictEqual({})
 
-    const p = localeStore.addCatalog(new SimpleCatalog('fr', {welcome: 'Bienvenue'})).then(() => {
+    const p = localeStore.add(new SimpleCatalog('fr', {welcome: 'Bienvenue'})).then(() => {
         expect(localeStore.status).toBe('waiting')
         expect(localeStore.domains).toStrictEqual([])
         expect(localeStore.messages).toStrictEqual({})
@@ -61,9 +61,9 @@ test('set locale en', () => {
 test('add bad catalogs', () => {
     expect.assertions(2)
 
-    const p = expect(localeStore.addCatalog(new SimpleCatalog('it', {}))).rejects.toThrow(CatalogComponent.BadLocaleCatalogError)
+    const p = expect(localeStore.add(new SimpleCatalog('it', {}))).rejects.toThrow(CatalogComponent.BadLocaleCatalogError)
 
-    const p2 = expect(localeStore.addCatalog(new RemoteCatalog('fr', ':3008/404'))).rejects.toThrow(CatalogComponent.BadLocaleCatalogError)
+    const p2 = expect(localeStore.add(new RemoteCatalog('fr', ':3008/404'))).rejects.toThrow(CatalogComponent.BadLocaleCatalogError)
 
     return Promise.allSettled([p, p2])
 })
@@ -77,7 +77,7 @@ test('change to bad locale', () => {
 test('change locale with bad catalog', async () => {
     expect.assertions(1)
 
-    await localeStore.addCatalog(new RemoteCatalog('de', ':3008/404'))
+    await localeStore.add(new RemoteCatalog('de', ':3008/404'))
 
     const p = localeStore.changeLocale('de').catch(() => {
         expect(localeStore.status).toBe('error')
@@ -94,20 +94,20 @@ test('domains', async () => {
     const cfd = new SimpleCatalog('fr', {})
     const cfa = new SimpleCatalog('fr', { 'app.title': 'title' }, ['app'])
     const cfh = new SimpleCatalog('fr', { 'help.title': 'help' }, ['help'])
-    const cfa2 = new SimpleCatalog('fr', { 'app.sub': 'sub' }, ['app'])
+    const cfa2 = new SimpleCatalog('fr', { 'app.sub': 'sub' }, ['app'], 'fr.app.2')
     const ced = new SimpleCatalog('en', {})
     const cea = new RemoteCatalog('en', ':3008/en.app.json', ['app'])
     const ceh = new SimpleCatalog('en', {}, ['help'])
     const cet = new SimpleCatalog('en', {}, ['tools'])
 
-    await store.addCatalog(cfd)
-    await store.addCatalog(cfa)
-    await store.addCatalog(cfh)
-    await store.addCatalog(cfa2)
-    await store.addCatalog(ced)
-    await store.addCatalog(cea)
-    await store.addCatalog(ceh)
-    await store.addCatalog(cet)
+    await store.add(cfd)
+    await store.add(cfa)
+    await store.add(cfh)
+    await store.add(cfa2)
+    await store.add(ced)
+    await store.add(cea)
+    await store.add(ceh)
+    await store.add(cet)
 
     expect(store.getCatalogsByDomain('default')).toStrictEqual([])
     await store.changeLocale('fr')
@@ -116,7 +116,7 @@ test('domains', async () => {
     expect(store.getCatalogsByDomain('help')).toStrictEqual([cfh])
     expect(store.messages).toStrictEqual({'app.title': 'title', 'app.sub': 'sub', 'help.title': 'help'})
 
-    await store.addCatalog(new SimpleCatalog('fr', { 'security.title': 'warning' }, ['security']))
+    await store.add(new SimpleCatalog('fr', { 'security.title': 'warning' }, ['security']))
     expect(store.messages).toStrictEqual({'app.title': 'title', 'app.sub': 'sub', 'help.title': 'help', 'security.title': 'warning'})
 
     expect(store.hasDomain('default')).toBe(true)
@@ -134,7 +134,7 @@ test('domains', async () => {
 
     expect(store.hasDomain('tools')).toBe(true)
 
-    const p = store.addCatalog(new RemoteCatalog('en', ':3008/en.app.json', ['foo'])).then(() => {
+    const p = store.add(new RemoteCatalog('en', ':3008/en.app.json', ['foo'])).then(() => {
         expect(store.activeDomains).toStrictEqual(['default', 'app', 'help', 'tools', 'foo'])
         expect(store.hasActiveDomain('foo')).toBe(true)
         expect(store.messages).toStrictEqual({'welcome': 'Welcome'})
@@ -155,19 +155,19 @@ test('normalize', async () => {
 
     const cfd = new SimpleCatalog('fr', {cfd: 'dfc'})
     const cfa = new SimpleCatalog('fr', {cfa: 'afc'}, ['app'])
-    const cfh = new RemoteCatalog('fr', ':3008/404', ['app'])
+    const cfh = new RemoteCatalog('fr', ':3008/404', ['app'], 'fr.app.2')
     const ced = new SimpleCatalog('en', {ced: 'dec'})
     const cea = new RemoteCatalog('en', ':3008/en.app.json', ['app'])
     const ceh = new SimpleCatalog('en', {ceh: 'hec'}, ['help'])
     const cet = new SimpleCatalog('en', {cet: 'tec'}, ['tools'])
 
-    await store.addCatalog(cfd)
-    await store.addCatalog(cfa)
-    await store.addCatalog(cfh)
-    await store.addCatalog(ced)
-    await store.addCatalog(cea)
-    await store.addCatalog(ceh)
-    await store.addCatalog(cet)
+    await store.add(cfd)
+    await store.add(cfa)
+    await store.add(cfh)
+    await store.add(ced)
+    await store.add(cea)
+    await store.add(ceh)
+    await store.add(cet)
 
     expect(normalizer.normalize(store)).toStrictEqual({
         status: 'waiting',
@@ -245,19 +245,19 @@ test('denormalize', async () => {
 
     const cfd = new SimpleCatalog('fr', {cfd: 'dfc'})
     const cfa = new SimpleCatalog('fr', {cfa: 'afc'}, ['app'])
-    const cfh = new RemoteCatalog('fr', ':3008/404', ['app'])
+    const cfh = new RemoteCatalog('fr', ':3008/404', ['app'], 'fr.app.2')
     const ced = new SimpleCatalog('en', {ced: 'dec'})
     const cea = new RemoteCatalog('en', ':3008/en.app.json', ['app'])
     const ceh = new SimpleCatalog('en', {ceh: 'hec'}, ['help'])
     const cet = new SimpleCatalog('en', {cet: 'tec'}, ['tools'])
 
-    await store.addCatalog(cfd)
-    await store.addCatalog(cfa)
-    await store.addCatalog(cfh)
-    await store.addCatalog(ced)
-    await store.addCatalog(cea)
-    await store.addCatalog(ceh)
-    await store.addCatalog(cet)
+    await store.add(cfd)
+    await store.add(cfa)
+    await store.add(cfh)
+    await store.add(ced)
+    await store.add(cea)
+    await store.add(ceh)
+    await store.add(cet)
 
     expect(store.locale).toBe('')
     expect(store.status).toBe('waiting')
@@ -302,19 +302,19 @@ test('ssr', async () => {
 
     const storeServer = new LocaleStore(['fr'])
 
-    await storeServer.addCatalog(new SimpleCatalog('fr', {cf1: '1fc'}))
-    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.json'))
-    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
+    await storeServer.add(new SimpleCatalog('fr', {cf1: '1fc'}))
+    await storeServer.add(new RemoteCatalog('fr', ':3008/fr.json', undefined, 'fr.default.remote'))
+    await storeServer.add(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
     await storeServer.changeLocale('fr')
-    await storeServer.addCatalog(new RemoteCatalog('fr', ':3008/fr.account.json', ['account']))
+    await storeServer.add(new RemoteCatalog('fr', ':3008/fr.account.json', ['account']))
 
     const normalized = await normalizer.normalize(storeServer)
 
     const storeClient = new LocaleStore(['fr'])
 
-    await storeClient.addCatalog(new SimpleCatalog('fr', {cf1: '1fc'}))
-    await storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.json'))
-    await storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
+    await storeClient.add(new SimpleCatalog('fr', {cf1: '1fc'}))
+    await storeClient.add(new RemoteCatalog('fr', ':3008/fr.json', undefined, 'fr.default.remote'))
+    await storeClient.add(new RemoteCatalog('fr', ':3008/fr.app.json', ['app']))
     await storeClient.changeLocale('fr')
 
     await denormalizer.denormalize(storeClient, normalized)
@@ -324,7 +324,7 @@ test('ssr', async () => {
     expect(storeClient.hasDomain('help')).toBe(false)
     expect(storeClient.hasDomain('account')).toBe(false)
 
-    const p = storeClient.addCatalog(new RemoteCatalog('fr', ':3008/fr.account.json', ['account'])).then(() => {
+    const p = storeClient.add(new RemoteCatalog('fr', ':3008/fr.account.json', ['account'])).then(() => {
         expect(storeClient.hasActiveDomain('account')).toBe(true)
         expect(storeClient.messages).toStrictEqual({
             cf1: '1fc',
