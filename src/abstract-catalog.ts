@@ -34,7 +34,9 @@ export abstract class AbstractCatalog implements Catalog {
     abstract prepare (): Promise<void>
 
     normalize(): CatalogNormalized {
-        return {}
+        return {
+            id: this.id,
+        }
     }
 
     denormalize(data: CatalogNormalized) {

@@ -170,6 +170,7 @@ export class MultipleCatalog implements Catalog {
 
     normalize(): MultipleCatalogNormalized {
         const data = {
+            id: this.id,
             status: this.status,
             catalogs: [] as CatalogNormalized[],
         };

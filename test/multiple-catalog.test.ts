@@ -152,10 +152,10 @@ test('normalize', () => {
     catalog.add(new SimpleCatalog('fr', {foo: 'bar'}))
     catalog.add(new RemoteCatalog('fr', ':3007/fr.json', ['app']))
 
-    expect(normalizer.normalize(catalog)).toStrictEqual({catalogs: [{}, {}], status: 'waiting'})
+    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'multi.fr', catalogs: [{id: 'fr.default'}, {id: 'fr.app'}], status: 'waiting'})
 
     const p = catalog.prepare().then(() => {
-        expect(normalizer.normalize(catalog)).toStrictEqual({catalogs: [{}, { messages: {foo: 'bar'}}], status: 'ready'})
+        expect(normalizer.normalize(catalog)).toStrictEqual({id: 'multi.fr', catalogs: [{id: 'fr.default'}, {id: 'fr.app', messages: {foo: 'bar'}}], status: 'ready'})
     })
 
     return p

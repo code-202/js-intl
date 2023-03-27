@@ -52,11 +52,14 @@ export class RemoteCatalog extends AbstractCatalog {
     normalize(): RemoteCatalogNormalized {
         if (this.status === 'ready') {
             return {
+                id: this.id,
                 messages: this.messages
             }
         }
 
-        return {}
+        return {
+            id: this.id,
+        }
     }
 
     denormalize(data: RemoteCatalogNormalized) {

@@ -12,6 +12,7 @@ export interface Catalog extends Normalizable<CatalogNormalized>, Denormalizable
     prepare(): Promise<void>;
 }
 export interface CatalogNormalized {
+    id: string;
 }
 export declare class IntlError extends Error {
 }

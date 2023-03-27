@@ -142,6 +142,7 @@ class MultipleCatalog {
     }
     normalize() {
         const data = {
+            id: this.id,
             status: this.status,
             catalogs: [],
         };

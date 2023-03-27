@@ -175,11 +175,13 @@ test('normalize', async () => {
         messages: {},
         catalogs: {
             fr: {
-                catalogs: [{}, {}, {}],
+                id: 'multi.fr',
+                catalogs: [{id: 'fr.default'}, {id: 'fr.app'}, {id: 'fr.app.2'}],
                 status: 'waiting',
             },
             en: {
-                catalogs: [{}, {}, {}, {}],
+                id: 'multi.en',
+                catalogs: [{id: 'en.default'}, {id: 'en.app'}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'waiting',
             },
         },
@@ -198,13 +200,15 @@ test('normalize', async () => {
         },
         catalogs: {
             fr: {
-                catalogs: [{}, {}, {}],
+                id: 'multi.fr',
+                catalogs: [{id: 'fr.default'}, {id: 'fr.app'}, {id: 'fr.app.2'}],
                 status: 'waiting',
             },
             en: {
-                catalogs: [{}, { messages: {
+                id: 'multi.en',
+                catalogs: [{id: 'en.default'}, {id: 'en.app', messages: {
                     welcome: 'Welcome',
-                }}, {}, {}],
+                }}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'ready',
             },
         },
@@ -223,13 +227,15 @@ test('normalize', async () => {
         },
         catalogs: {
             fr: {
-                catalogs: [{}, {}, {}],
+                id: 'multi.fr',
+                catalogs: [{id: 'fr.default'}, {id: 'fr.app'}, {id: 'fr.app.2'}],
                 status: 'error',
             },
             en: {
-                catalogs: [{}, { messages: {
+                id: 'multi.en',
+                catalogs: [{id: 'en.default'}, {id: 'en.app', messages: {
                     welcome: 'Welcome',
-                }}, {}, {}],
+                }}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'ready',
             },
         },

@@ -36,5 +36,5 @@ test('normalize', () => {
 
     const normalizer = new Normalizer();
 
-    expect(normalizer.normalize(catalog)).toStrictEqual({})
+    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default'})
 })

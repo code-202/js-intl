@@ -12,7 +12,7 @@ let catalog2: RemoteCatalog
 beforeAll(() => {
     server = app.listen(3006)
     catalog = new RemoteCatalog('fr', ':3006/fr.json')
-    catalog2 = new RemoteCatalog('fr', ':3006/fr.json')
+    catalog2 = new RemoteCatalog('fr', ':3006/fr.json', undefined, 'fr.default.other')
 })
 afterAll(() => {
     server.close()
@@ -38,8 +38,8 @@ test('normalize', () => {
 
     const normalizer = new Normalizer();
 
-    expect(normalizer.normalize(catalog)).toStrictEqual({messages: {foo: 'bar'}})
-    expect(normalizer.normalize(catalog2)).toStrictEqual({})
+    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default', messages: {foo: 'bar'}})
+    expect(normalizer.normalize(catalog2)).toStrictEqual({id: 'fr.default.other'})
 })
 
 test('denormalize', () => {

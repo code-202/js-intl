@@ -15,7 +15,7 @@ export interface Catalog extends Normalizable<CatalogNormalized>, Denormalizable
 }
 
 export interface CatalogNormalized {
-
+    id: string
 }
 
 export class IntlError extends Error {}

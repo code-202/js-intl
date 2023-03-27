@@ -47,10 +47,13 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     normalize() {
         if (this.status === 'ready') {
             return {
+                id: this.id,
                 messages: this.messages
             };
         }
-        return {};
+        return {
+            id: this.id,
+        };
     }
     denormalize(data) {
         (0, mobx_1.action)(() => {

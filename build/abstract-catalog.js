@@ -23,7 +23,9 @@ class AbstractCatalog {
         return this.domains.indexOf(domain) >= 0;
     }
     normalize() {
-        return {};
+        return {
+            id: this.id,
+        };
     }
     denormalize(data) {
         // Do nothing
