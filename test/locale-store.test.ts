@@ -31,26 +31,28 @@ test('simple add', () => {
 })
 
 test('set locale fr', () => {
-    expect.assertions(4)
+    expect.assertions(5)
 
     const p = localeStore.changeLocale('fr').then(() => {
         expect(localeStore.locale).toBe('fr')
         expect(localeStore.status).toBe('ready')
         expect(localeStore.domains).toStrictEqual(['default'])
         expect(localeStore.messages).toStrictEqual({welcome: 'Bienvenue'})
+        expect(localeStore.intl.formatMessage({id: 'welcome'})).toBe('Bienvenue')
     })
 
     return p
 })
 
 test('set locale en', () => {
-    expect.assertions(4)
+    expect.assertions(5)
 
     const p = localeStore.changeLocale('en').then(() => {
         expect(localeStore.locale).toBe('en')
         expect(localeStore.status).toBe('ready')
         expect(localeStore.domains).toStrictEqual([])
         expect(localeStore.messages).toStrictEqual({})
+        expect(localeStore.intl.formatMessage({id: 'welcome'})).toBe('welcome')
     })
 
     return p

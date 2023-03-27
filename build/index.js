@@ -26,15 +26,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SimpleCatalog = exports.RemoteCatalog = exports.MultipleCatalog = exports.MobxIntlProvider = exports.LocaleStore = exports.CatalogComponent = exports.CatalogAwaiter = void 0;
+exports.SimpleCatalog = exports.RemoteCatalog = exports.MultipleCatalog = exports.LocaleStore = exports.FormattedMessage = exports.CatalogComponent = exports.CatalogAwaiter = void 0;
 const CatalogComponent = __importStar(require("./catalog"));
 exports.CatalogComponent = CatalogComponent;
 const catalog_awaiter_1 = __importDefault(require("./catalog-awaiter"));
 exports.CatalogAwaiter = catalog_awaiter_1.default;
+const formatted_message_1 = __importDefault(require("./formatted-message"));
+exports.FormattedMessage = formatted_message_1.default;
 const locale_store_1 = require("./locale-store");
 Object.defineProperty(exports, "LocaleStore", { enumerable: true, get: function () { return locale_store_1.LocaleStore; } });
-const mobx_intl_provider_1 = __importDefault(require("./mobx-intl-provider"));
-exports.MobxIntlProvider = mobx_intl_provider_1.default;
 const multiple_catalog_1 = require("./multiple-catalog");
 Object.defineProperty(exports, "MultipleCatalog", { enumerable: true, get: function () { return multiple_catalog_1.MultipleCatalog; } });
 const remote_catalog_1 = require("./remote-catalog");

@@ -4,11 +4,14 @@ exports.LocaleStore = void 0;
 const mobx_1 = require("mobx");
 const catalog_1 = require("./catalog");
 const multiple_catalog_1 = require("./multiple-catalog");
+const intl_1 = require("@formatjs/intl");
 class LocaleStore {
     _status = 'waiting';
     _locale = '';
     _messages = {};
     _disposer = null;
+    _intl;
+    _intlCache;
     catalogs = [];
     constructor(locales) {
         (0, mobx_1.makeObservable)(this, {
@@ -27,6 +30,11 @@ class LocaleStore {
                 this.catalogs.push(new multiple_catalog_1.MultipleCatalog(locale));
             }
         }
+        this._intlCache = (0, intl_1.createIntlCache)();
+        this._intl = this.buildIntl();
+        (0, mobx_1.autorun)(() => {
+            this._intl = this.buildIntl();
+        });
     }
     get locale() {
         return this._locale;
@@ -36,6 +44,9 @@ class LocaleStore {
     }
     get messages() {
         return this._messages;
+    }
+    get intl() {
+        return this._intl;
     }
     addCatalog(catalog) {
         return new Promise((resolve, reject) => {
@@ -121,6 +132,12 @@ class LocaleStore {
     }
     hasActiveDomain(domain) {
         return this.activeDomains.indexOf(domain) >= 0;
+    }
+    buildIntl() {
+        return (0, intl_1.createIntl)({
+            locale: this._locale || 'en',
+            messages: this._messages,
+        }, this._intlCache);
     }
     normalize() {
         const data = {

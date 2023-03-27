@@ -1,13 +1,16 @@
 import { Denormalizable, Normalizable } from '@code-202/serializer'
-import { makeObservable, observable, action, computed, reaction, IReactionDisposer } from 'mobx'
+import { makeObservable, observable, action, computed, reaction, IReactionDisposer, autorun } from 'mobx'
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogStatus, UnknownLocaleError } from './catalog'
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
+import {createIntl, createIntlCache, IntlShape, IntlCache} from '@formatjs/intl'
 
 export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denormalizable<LocaleStoreNormalized> {
     private _status: CatalogStatus = 'waiting'
     private _locale: string = ''
     private _messages: CatalogMessages = {}
     private _disposer: IReactionDisposer | null = null
+    private _intl: IntlShape
+    private _intlCache: IntlCache
 
     catalogs: MultipleCatalog[] = []
 
@@ -31,6 +34,13 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
                 this.catalogs.push(new MultipleCatalog(locale))
             }
         }
+
+        this._intlCache = createIntlCache()
+        this._intl = this.buildIntl()
+
+        autorun(() => {
+            this._intl = this.buildIntl()
+        })
     }
 
     get locale (): string {
@@ -43,6 +53,10 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
     get messages (): CatalogMessages {
         return this._messages
+    }
+
+    get intl (): IntlShape {
+        return this._intl
     }
 
     addCatalog (catalog: Catalog): Promise<void> {
@@ -149,6 +163,13 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
     hasActiveDomain (domain: string): boolean {
         return this.activeDomains.indexOf(domain) >= 0
+    }
+
+    protected buildIntl(): IntlShape {
+        return createIntl({
+            locale: this._locale || 'en',
+            messages: this._messages,
+        }, this._intlCache)
     }
 
     normalize (): LocaleStoreNormalized {
