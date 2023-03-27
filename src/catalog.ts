@@ -16,10 +16,12 @@ export interface Catalog extends Normalizable<CatalogNormalized>, Denormalizable
 
 export interface CatalogNormalized {
     id: string
+    domains?: string[]
 }
 
 export class IntlError extends Error {}
 export class AlreadyUsedCatalogError extends IntlError {}
+export class BadDenormalizationError extends IntlError {}
 export class BadLocaleCatalogError extends IntlError {}
 export class DenormalizeError extends IntlError {}
 export class UnknownLocaleError extends IntlError {}

@@ -155,14 +155,14 @@ test('normalize', () => {
     expect(normalizer.normalize(catalog)).toStrictEqual({id: 'multi.fr', catalogs: [{id: 'fr.default'}, {id: 'fr.app'}], status: 'waiting'})
 
     const p = catalog.prepare().then(() => {
-        expect(normalizer.normalize(catalog)).toStrictEqual({id: 'multi.fr', catalogs: [{id: 'fr.default'}, {id: 'fr.app', messages: {foo: 'bar'}}], status: 'ready'})
+        expect(normalizer.normalize(catalog)).toStrictEqual({id: 'multi.fr', catalogs: [{id: 'fr.default'}, {id: 'fr.app', domains: ['app'], messages: {foo: 'bar'}}], status: 'ready'})
     })
 
     return p
 })
 
 test('denormalize', () => {
-    expect.assertions(5)
+    expect.assertions(10)
 
     const catalog: MultipleCatalog = new MultipleCatalog('fr')
     const denormalizer = new Denormalizer();
@@ -171,17 +171,25 @@ test('denormalize', () => {
     catalog.add(new RemoteCatalog('fr', ':3007/fr.app.json', ['app']))
 
     expect(catalog.status).toBe('waiting')
-    denormalizer.denormalize(catalog, {catalogs: [{}, {}], status: 'waiting'})
+    denormalizer.denormalize(catalog, {catalogs: [{id: 'fr.default'}, {id: 'fr.app'}], status: 'waiting'})
     expect(catalog.messages).toStrictEqual({foo: 'bar'})
     expect(catalog.status).toBe('waiting')
 
-    denormalizer.denormalize(catalog, {catalogs: [{}, { messages: {welcome: 'Bienvenue'}}], status: 'ready'})
+    denormalizer.denormalize(catalog, {catalogs: [{id: 'fr.app', messages: {welcome: 'Bienvenue'}}, {id: 'fr.default'}], status: 'ready'})
     expect(catalog.messages).toStrictEqual({foo: 'bar', welcome: 'Bienvenue'})
     expect(catalog.status).toBe('ready')
+
+
+    denormalizer.denormalize(catalog, {catalogs: [{id: 'fr.app.2', domains: ['app'], messages: {bye: 'Au revoir'}}, {id: 'fr.default.2'}, {id: 'multi.fr2', messages: {hello: 'Bonjour'}}], status: 'ready'})
+    expect(catalog.messages).toStrictEqual({foo: 'bar', welcome: 'Bienvenue', bye: 'Au revoir'})
+    expect(catalog.status).toBe('ready')
+    expect(catalog.hasCatalog('fr.app.2')).toBe(true)
+    expect(catalog.hasCatalog('fr.default.2')).toBe(false)
+    expect(catalog.hasCatalog('multi.fr.2')).toBe(false)
 })
 
 test('ssr', async () => {
-    expect.assertions(7)
+    expect.assertions(8)
 
     const normalizer = new Normalizer();
     const denormalizer = new Denormalizer();
@@ -205,16 +213,24 @@ test('ssr', async () => {
     await denormalizer.denormalize(catalogClient, normalized)
     await catalogClient.prepare()
 
-    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue'})
-    expect(catalogClient.domains).toStrictEqual(['default', 'app'])
+    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
+    expect(catalogClient.domains).toStrictEqual(['default', 'app', 'account'])
 
-    const p = catalogClient.add(new RemoteCatalog('fr', ':3007/fr.account.json', ['account'])).then(() => {
+    const p1 = catalogClient.add(new RemoteCatalog('fr', ':3007/fr.account.json', ['account']), true).then(() => {
         expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
         expect(catalogClient.domains).toStrictEqual(['default', 'app', 'account'])
     })
 
-    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
-    expect(catalogClient.domains).toStrictEqual(['default', 'app', 'account'])
+    await denormalizer.denormalize(catalogClient , {catalogs: [{id: 'fr.app.remote', messages: {bye: 'Au revoir'}}], status: 'ready'})
 
-    return p
+    expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte'})
+
+    const p2 = catalogClient.add(new RemoteCatalog('fr', ':3007/404', ['app'], 'fr.app.remote')).then(() => {
+        expect(catalogClient.messages).toStrictEqual({simple: 'catalog', foo: 'bar', welcome: 'Bienvenue', account: 'Mon compte', bye: 'Au revoir'})
+    })
+
+    const p3 = catalogClient.add(new RemoteCatalog('fr', ':3007/404', ['app'], 'fr.app.remote.404'))
+    expect(p3).rejects.toThrow(CatalogComponent.UnreachableRemoteError)
+
+    return Promise.allSettled([p1, p2, p3])
 })

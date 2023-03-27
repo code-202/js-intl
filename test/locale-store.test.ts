@@ -206,7 +206,7 @@ test('normalize', async () => {
             },
             en: {
                 id: 'multi.en',
-                catalogs: [{id: 'en.default'}, {id: 'en.app', messages: {
+                catalogs: [{id: 'en.default'}, {id: 'en.app', domains: ['app'], messages: {
                     welcome: 'Welcome',
                 }}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'ready',
@@ -233,7 +233,7 @@ test('normalize', async () => {
             },
             en: {
                 id: 'multi.en',
-                catalogs: [{id: 'en.default'}, {id: 'en.app', messages: {
+                catalogs: [{id: 'en.default'}, {id: 'en.app', domains: ['app'], messages: {
                     welcome: 'Welcome',
                 }}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'ready',
@@ -279,13 +279,15 @@ test('denormalize', async () => {
         },
         catalogs: {
             fr: {
-                catalogs: [{}, {}, {}],
+                id: 'multi.fr',
+                catalogs: [{id: 'fr.default'}, {id: 'fr.app'}, {id: 'fr.app.2'}],
                 status: 'error',
             },
             en: {
-                catalogs: [{}, { messages: {
+                id: 'multi.en',
+                catalogs: [{id: 'en.default'}, {id: 'en.app', domains: ['app'], messages: {
                     welcome: 'Welcome',
-                }}, {}, {}],
+                }}, {id: 'en.help'}, {id: 'en.tools'}],
                 status: 'ready',
             },
         },
@@ -301,7 +303,7 @@ test('denormalize', async () => {
 })
 
 test('ssr', async () => {
-    expect.assertions(9)
+    expect.assertions(6)
 
     const normalizer = new Normalizer();
     const denormalizer = new Denormalizer();
@@ -328,9 +330,9 @@ test('ssr', async () => {
     expect(storeClient.hasDomain('default')).toBe(true)
     expect(storeClient.hasDomain('app')).toBe(true)
     expect(storeClient.hasDomain('help')).toBe(false)
-    expect(storeClient.hasDomain('account')).toBe(false)
+    expect(storeClient.hasDomain('account')).toBe(true)
 
-    const p = storeClient.add(new RemoteCatalog('fr', ':3008/fr.account.json', ['account'])).then(() => {
+    const p = storeClient.add(new RemoteCatalog('fr', ':3008/fr.account.json', ['account']), true).then(() => {
         expect(storeClient.hasActiveDomain('account')).toBe(true)
         expect(storeClient.messages).toStrictEqual({
             cf1: '1fc',
@@ -338,15 +340,6 @@ test('ssr', async () => {
             welcome: 'Bienvenue',
             account: 'Mon compte',
         })
-    })
-
-    expect(storeClient.hasDomain('account')).toBe(true)
-    expect(storeClient.hasActiveDomain('account')).toBe(true)
-    expect(storeClient.messages).toStrictEqual({
-        cf1: '1fc',
-        foo: 'bar',
-        welcome: 'Bienvenue',
-        account: 'Mon compte',
     })
 
     return p

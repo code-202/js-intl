@@ -1,4 +1,4 @@
-import { Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
+import { BadDenormalizationError, Catalog, CatalogMessages, CatalogNormalized, CatalogStatus } from './catalog'
 
 export abstract class AbstractCatalog implements Catalog {
     private _id: string
@@ -40,6 +40,8 @@ export abstract class AbstractCatalog implements Catalog {
     }
 
     denormalize(data: CatalogNormalized) {
-        // Do nothing
+        if (data.id != this.id) {
+            throw new BadDenormalizationError('try to denormalize catalog id ' + data.id  + ' in catalog ' + this.id)
+        }
     }
 }

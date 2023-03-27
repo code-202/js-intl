@@ -53,6 +53,7 @@ export class RemoteCatalog extends AbstractCatalog {
         if (this.status === 'ready') {
             return {
                 id: this.id,
+                domains: this.domains,
                 messages: this.messages
             }
         }

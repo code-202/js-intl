@@ -1,6 +1,7 @@
-import { Normalizer } from '@code-202/serializer'
+import { Denormalizer, Normalizer } from '@code-202/serializer'
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
 import { SimpleCatalog  } from '../src'
+import { BadDenormalizationError } from '../src/catalog'
 
 let catalog: SimpleCatalog
 let catalog2: SimpleCatalog
@@ -37,4 +38,12 @@ test('normalize', () => {
     const normalizer = new Normalizer();
 
     expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default'})
+})
+
+test('denormalize', () => {
+    expect.assertions(1)
+
+    const denormalizer = new Denormalizer();
+
+    expect(() => denormalizer.denormalize(catalog, {id: 'fr.default.2'})).toThrow(BadDenormalizationError)
 })

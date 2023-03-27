@@ -48,6 +48,7 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
         if (this.status === 'ready') {
             return {
                 id: this.id,
+                domains: this.domains,
                 messages: this.messages
             };
         }

@@ -38,7 +38,7 @@ test('normalize', () => {
 
     const normalizer = new Normalizer();
 
-    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default', messages: {foo: 'bar'}})
+    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default', domains: ['default'], messages: {foo: 'bar'}})
     expect(normalizer.normalize(catalog2)).toStrictEqual({id: 'fr.default.other'})
 })
 

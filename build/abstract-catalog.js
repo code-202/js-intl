@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractCatalog = void 0;
+const catalog_1 = require("./catalog");
 class AbstractCatalog {
     _id;
     _locale;
@@ -28,7 +29,9 @@ class AbstractCatalog {
         };
     }
     denormalize(data) {
-        // Do nothing
+        if (data.id != this.id) {
+            throw new catalog_1.BadDenormalizationError('try to denormalize catalog id ' + data.id + ' in catalog ' + this.id);
+        }
     }
 }
 exports.AbstractCatalog = AbstractCatalog;

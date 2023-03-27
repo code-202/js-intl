@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MultipleCatalog = void 0;
 const catalog_1 = require("./catalog");
 const mobx_1 = require("mobx");
+const simple_catalog_1 = require("./simple-catalog");
 class MultipleCatalog {
     catalogs;
     status;
@@ -40,9 +41,12 @@ class MultipleCatalog {
                 throw new catalog_1.AlreadyUsedCatalogError('catalog is already used : ' + catalog.id);
             }
             this.catalogs.push(catalog);
-            const n = this._normalizedRemaining.shift();
-            if (n) {
-                catalog.denormalize(n);
+            for (const i in this._normalizedRemaining) {
+                if (this._normalizedRemaining[i].id == catalog.id) {
+                    catalog.denormalize(this._normalizedRemaining[i]);
+                    this._normalizedRemaining.splice(parseInt(i), 1);
+                    continue;
+                }
             }
             if (this._prepared) {
                 catalog.prepare().then(() => {
@@ -155,14 +159,27 @@ class MultipleCatalog {
         (0, mobx_1.action)(() => {
             this.status = data.status;
         })();
-        for (let k = 0; k < data.catalogs.length; k++) {
-            if (this.catalogs[k]) {
-                this.catalogs[k].denormalize(data.catalogs[k]);
-            }
-            else {
-                this._normalizedRemaining.push(data.catalogs[k]);
+        const normalizedCatalogs = data.catalogs.slice(0);
+        for (const catalog of this.catalogs) {
+            for (const i in normalizedCatalogs) {
+                if (normalizedCatalogs[i].id == catalog.id) {
+                    catalog.denormalize(normalizedCatalogs[i]);
+                    normalizedCatalogs.splice(parseInt(i), 1);
+                    continue;
+                }
             }
         }
+        for (const i in normalizedCatalogs) {
+            const rcData = normalizedCatalogs[i];
+            if (rcData.messages != undefined && rcData.domains != undefined) {
+                const c = new simple_catalog_1.SimpleCatalog(this.locale, rcData.messages, rcData.domains, rcData.id);
+                c.denormalize(rcData);
+                this.add(c);
+                normalizedCatalogs.splice(parseInt(i), 1);
+                continue;
+            }
+        }
+        this._normalizedRemaining = normalizedCatalogs;
         this.refreshStatus();
     }
 }

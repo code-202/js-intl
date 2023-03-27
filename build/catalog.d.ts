@@ -13,10 +13,13 @@ export interface Catalog extends Normalizable<CatalogNormalized>, Denormalizable
 }
 export interface CatalogNormalized {
     id: string;
+    domains?: string[];
 }
 export declare class IntlError extends Error {
 }
 export declare class AlreadyUsedCatalogError extends IntlError {
+}
+export declare class BadDenormalizationError extends IntlError {
 }
 export declare class BadLocaleCatalogError extends IntlError {
 }

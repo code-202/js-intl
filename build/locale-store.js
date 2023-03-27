@@ -48,11 +48,11 @@ class LocaleStore {
     get intl() {
         return this._intl;
     }
-    add(catalog) {
+    add(catalog, soft = false) {
         return new Promise((resolve, reject) => {
             const mc = this.getCatalog(catalog.locale);
             if (mc) {
-                mc.add(catalog).then(() => {
+                mc.add(catalog, soft).then(() => {
                     resolve();
                 }).catch((err) => {
                     reject(err);
