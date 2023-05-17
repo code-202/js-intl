@@ -315,13 +315,15 @@
     "@code-202/serializer" "^1.0.0"
     lodash.has "^4.5.2"
 
-"@code-202/loader@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@code-202/loader/-/loader-2.0.1.tgz#c9ed44f286bc36ed9642855c1cb84c73df1c1e57"
-  integrity sha512-PzJNdltp+YeLt+uKTgJlvLXORq3ylUcwuBJKN8LiRf8D7W8s6HdwdJSqD19UNZLEvMaSMb0s74xEzWrLatqb+Q==
+"@code-202/loader@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@code-202/loader/-/loader-2.1.1.tgz#5606c448369047d5512010dccfd34d3457fd9ddd"
+  integrity sha512-u8LxvlgsGbceOqZM4dn68oZZjs7gOMGIy2mN9qQGUSkA6zyfBByXpXTriEqcgycBLj9tBVaZK6QanFOOhXJ+LA==
   dependencies:
     "@code-202/agent" "^4.0.0"
     "@code-202/serializer" "^1.0.0"
+    "@mdi/js" "^7.1.96"
+    "@mdi/react" "^1.6.1"
     classnames "^2.3.2"
     mobx "^6.8.0"
     mobx-react "^7.6.0"
@@ -723,6 +725,18 @@
   dependencies:
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
+
+"@mdi/js@^7.1.96":
+  version "7.2.96"
+  resolved "https://registry.yarnpkg.com/@mdi/js/-/js-7.2.96.tgz#a2a20be740a75e65c8b8b9e12a2b699c06a9208f"
+  integrity sha512-paR9M9ZT7rKbh2boksNUynuSZMHhqRYnEZOm/KrZTjQ4/FzyhjLHuvw/8XYzP+E7fS4+/Ms/82EN1pl/OFsiIA==
+
+"@mdi/react@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@mdi/react/-/react-1.6.1.tgz#624313593ae8065d2a09878ca81beb3e4b676b03"
+  integrity sha512-4qZeDcluDFGFTWkHs86VOlHkm6gnKaMql13/gpIcUQ8kzxHgpj31NuCkD8abECVfbULJ3shc7Yt4HJ6Wu6SN4w==
+  dependencies:
+    prop-types "^15.7.2"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -3542,7 +3556,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.8.1:
+prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
