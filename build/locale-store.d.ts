@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Denormalizable, Normalizable } from '@code-202/serializer';
 import { Catalog, CatalogMessages, CatalogStatus } from './catalog';
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog';
@@ -14,7 +15,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     get locale(): string;
     get status(): CatalogStatus;
     get messages(): CatalogMessages;
-    get intl(): IntlShape;
+    get intl(): IntlShape<React.ReactNode>;
     add(catalog: Catalog, soft?: boolean): Promise<void>;
     changeLocale(locale: string): Promise<void>;
     getCatalog(locale: string): MultipleCatalog | null;
@@ -23,7 +24,7 @@ export declare class LocaleStore implements Normalizable<LocaleStoreNormalized>,
     hasDomain(domain: string): boolean;
     get activeDomains(): string[];
     hasActiveDomain(domain: string): boolean;
-    protected buildIntl(): IntlShape;
+    protected buildIntl(): IntlShape<React.ReactNode>;
     normalize(): LocaleStoreNormalized;
     denormalize(data: LocaleStoreNormalized): void;
 }

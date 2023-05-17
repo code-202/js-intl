@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { makeObservable, observable, action, computed, reaction, IReactionDisposer, autorun } from 'mobx'
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogStatus, UnknownLocaleError } from './catalog'
@@ -9,7 +10,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
     private _locale: string = ''
     private _messages: CatalogMessages = {}
     private _disposer: IReactionDisposer | null = null
-    private _intl: IntlShape
+    private _intl: IntlShape<React.ReactNode>
     private _intlCache: IntlCache
 
     catalogs: MultipleCatalog[] = []
@@ -55,7 +56,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return this._messages
     }
 
-    get intl (): IntlShape {
+    get intl (): IntlShape<React.ReactNode> {
         return this._intl
     }
 
@@ -165,8 +166,8 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return this.activeDomains.indexOf(domain) >= 0
     }
 
-    protected buildIntl(): IntlShape {
-        return createIntl({
+    protected buildIntl(): IntlShape<React.ReactNode> {
+        return createIntl<React.ReactNode>({
             locale: this._locale || 'en',
             messages: this._messages,
         }, this._intlCache)
