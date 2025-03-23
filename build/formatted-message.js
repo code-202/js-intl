@@ -33,8 +33,12 @@ class FormattedMessage extends React.PureComponent {
         this.locale = (0, kernel_1.getKernel)().container.get('intl.locale');
     }
     render() {
-        const { values, ...descriptor } = this.props;
-        return this.locale.intl.formatMessage(descriptor, values);
+        const { values, html, ...descriptor } = this.props;
+        const text = this.locale.intl.formatMessage(descriptor, values);
+        if (html && typeof text == 'string') {
+            return React.createElement("div", { dangerouslySetInnerHTML: { __html: text } });
+        }
+        return text;
     }
 }
 exports.default = (0, mobx_react_1.observer)(FormattedMessage);

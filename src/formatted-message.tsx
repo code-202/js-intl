@@ -1,13 +1,13 @@
 import * as React from "react"
 import { MessageDescriptor } from '@formatjs/intl'
-import { FormatXMLElementFn} from 'intl-messageformat'
-import { PrimitiveType } from 'intl-messageformat'
+import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 import { getKernel } from "@code-202/kernel"
 import { observer } from "mobx-react"
 import { LocaleStore } from "./locale-store"
 
 export interface Props extends MessageDescriptor {
-    values?: Record<string, PrimitiveType|FormatXMLElementFn<React.ReactNode>|React.ReactNode>
+    values?: Record<string, PrimitiveType | FormatXMLElementFn<React.ReactNode> | React.ReactNode>
+    html?: boolean
 }
 
 class FormattedMessage extends React.PureComponent<Props> {
@@ -19,10 +19,16 @@ class FormattedMessage extends React.PureComponent<Props> {
         this.locale = getKernel().container.get('intl.locale') as LocaleStore
     }
 
-    render () {
-        const { values, ...descriptor } = this.props
+    render() {
+        const { values, html, ...descriptor } = this.props
 
-        return this.locale.intl.formatMessage(descriptor, values)
+        const text = this.locale.intl.formatMessage(descriptor, values)
+
+        if (html && typeof text == 'string') {
+            return <div dangerouslySetInnerHTML={{ __html: text }} />
+        }
+
+        return text
     }
 }
 
