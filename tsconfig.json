@@ -3,7 +3,8 @@
         "rootDir": "./src",
         "outDir": "./build",
         "module": "nodenext",
-        "target": "esnext",
+        "target": "es2020",
+        "moduleResolution": "NodeNext",
         "types": [],
         "sourceMap": true,
         "declaration": true,
@@ -17,8 +18,9 @@
         "noUncheckedSideEffectImports": true,
         "moduleDetection": "force",
         "skipLibCheck": true,
+        "esModuleInterop": true,
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
     ]
 }

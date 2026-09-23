@@ -5,13 +5,13 @@ const catalog_1 = require("./catalog");
 const mobx_1 = require("mobx");
 const simple_catalog_1 = require("./simple-catalog");
 class MultipleCatalog {
-    catalogs;
-    status;
-    _id;
-    _locale;
-    _prepared = false;
-    _normalizedRemaining = [];
     constructor(locale, id = '') {
+        this._prepared = false;
+        this._normalizedRemaining = [];
+        this.catalogs = [];
+        this._id = id || 'multi.' + locale;
+        this.status = 'waiting';
+        this._locale = locale;
         (0, mobx_1.makeObservable)(this, {
             catalogs: mobx_1.observable,
             status: mobx_1.observable,
@@ -20,10 +20,6 @@ class MultipleCatalog {
             add: mobx_1.action,
             refreshStatus: mobx_1.action,
         });
-        this._id = id || 'multi.' + locale;
-        this.catalogs = [];
-        this.status = 'waiting';
-        this._locale = locale;
     }
     get id() {
         return this._id;

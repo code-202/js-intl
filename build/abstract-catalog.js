@@ -3,9 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractCatalog = void 0;
 const catalog_1 = require("./catalog");
 class AbstractCatalog {
-    _id;
-    _locale;
-    _domains;
     constructor(locale, domains = ['default'], id = '') {
         this._id = id || locale + '.' + domains.join('.');
         this._locale = locale;

@@ -38,7 +38,6 @@ const React = __importStar(require("react"));
 const kernel_1 = require("@code-202/kernel");
 const mobx_react_1 = require("mobx-react");
 class FormattedMessage extends React.PureComponent {
-    locale;
     constructor(props) {
         super(props);
         this.locale = (0, kernel_1.getKernel)().container.get('intl.locale');

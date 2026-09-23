@@ -40,7 +40,6 @@ const mobx_react_1 = require("mobx-react");
 const kernel_1 = require("@code-202/kernel");
 const loader_1 = require("@code-202/loader");
 class CatalogAwaiter extends React.Component {
-    locale;
     constructor(props) {
         super(props);
         this.locale = (0, kernel_1.getKernel)().container.get('intl.locale');

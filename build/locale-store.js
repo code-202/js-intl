@@ -6,14 +6,12 @@ const catalog_1 = require("./catalog");
 const multiple_catalog_1 = require("./multiple-catalog");
 const intl_1 = require("@formatjs/intl");
 class LocaleStore {
-    _status = 'waiting';
-    _locale = '';
-    _messages = {};
-    _disposer = null;
-    _intl;
-    _intlCache;
-    catalogs = [];
     constructor(locales) {
+        this._status = 'waiting';
+        this._locale = '';
+        this._messages = {};
+        this._disposer = null;
+        this.catalogs = [];
         (0, mobx_1.makeObservable)(this, {
             _status: mobx_1.observable,
             _locale: mobx_1.observable,

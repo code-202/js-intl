@@ -12,6 +12,11 @@ export class MultipleCatalog implements Catalog {
     private _normalizedRemaining: CatalogNormalized[] = []
 
     constructor(locale: string, id: string = '') {
+        this.catalogs = []
+        this._id = id || 'multi.' + locale
+        this.status = 'waiting'
+        this._locale = locale
+
         makeObservable<MultipleCatalog, 'refreshStatus'>(this, {
             catalogs: observable,
             status: observable,
@@ -22,12 +27,6 @@ export class MultipleCatalog implements Catalog {
             add: action,
             refreshStatus: action,
         })
-
-        this._id = id || 'multi.' + locale
-        this.catalogs = []
-        this.status = 'waiting'
-
-        this._locale = locale
     }
 
     get id(): string {

@@ -6,11 +6,10 @@ const loader_1 = require("@code-202/loader");
 const mobx_1 = require("mobx");
 const abstract_catalog_1 = require("./abstract-catalog");
 class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
-    status = 'waiting';
-    messages = {};
-    _url;
     constructor(locale, url, domains = ['default'], id = '') {
         super(locale, domains, id);
+        this.status = 'waiting';
+        this.messages = {};
         (0, mobx_1.makeObservable)(this, {
             status: mobx_1.observable,
             messages: mobx_1.observable,

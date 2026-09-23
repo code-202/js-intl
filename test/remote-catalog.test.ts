@@ -1,6 +1,6 @@
 import { Denormalizer, Normalizer } from '@code-202/serializer'
 import { test, expect, afterAll, beforeAll } from '@jest/globals'
-import { CatalogComponent, RemoteCatalog  } from '../src'
+import { CatalogComponent, RemoteCatalog } from '../src'
 import { DenormalizeError } from '../src/catalog'
 
 import app from './server'
@@ -11,8 +11,8 @@ let catalog2: RemoteCatalog
 
 beforeAll(() => {
     server = app.listen(3006)
-    catalog = new RemoteCatalog('fr', ':3006/fr.json')
-    catalog2 = new RemoteCatalog('fr', ':3006/fr.json', undefined, 'fr.default.other')
+    catalog = new RemoteCatalog('fr', 'localhost:3006/fr.json')
+    catalog2 = new RemoteCatalog('fr', 'localhost:3006/fr.json', undefined, 'fr.default.other')
 })
 afterAll(() => {
     server.close()
@@ -26,7 +26,7 @@ test('simple', () => {
     expect(catalog.messages).toStrictEqual({})
     const p = catalog.prepare().then(() => {
         expect(catalog.status).toBe('ready')
-        expect(catalog.messages).toStrictEqual({foo: 'bar'})
+        expect(catalog.messages).toStrictEqual({ foo: 'bar' })
     })
     expect(catalog.status).toBe('updating')
 
@@ -38,8 +38,8 @@ test('normalize', () => {
 
     const normalizer = new Normalizer();
 
-    expect(normalizer.normalize(catalog)).toStrictEqual({id: 'fr.default', domains: ['default'], messages: {foo: 'bar'}})
-    expect(normalizer.normalize(catalog2)).toStrictEqual({id: 'fr.default.other'})
+    expect(normalizer.normalize(catalog)).toStrictEqual({ id: 'fr.default', domains: ['default'], messages: { foo: 'bar' } })
+    expect(normalizer.normalize(catalog2)).toStrictEqual({ id: 'fr.default.other' })
 })
 
 test('denormalize', () => {
@@ -48,15 +48,15 @@ test('denormalize', () => {
     const denormalizer = new Denormalizer();
 
     expect(catalog2.status).toBe('waiting')
-    denormalizer.denormalize(catalog2, {messages: {foo: 'fighters', bar: 'ney'}})
-    expect(catalog2.messages).toStrictEqual({foo: 'fighters', bar: 'ney'})
+    denormalizer.denormalize(catalog2, { messages: { foo: 'fighters', bar: 'ney' } })
+    expect(catalog2.messages).toStrictEqual({ foo: 'fighters', bar: 'ney' })
     expect(catalog2.status).toBe('ready')
 })
 
 test('error', () => {
     expect.assertions(6)
 
-    const catalog = new RemoteCatalog('fr', ':3006/404')
+    const catalog = new RemoteCatalog('fr', 'localhost:3006/404')
 
     expect(catalog.locale).toBe('fr')
     expect(catalog.status).toBe('waiting')
@@ -75,7 +75,7 @@ test('error', () => {
 test('double prepare', () => {
     expect.assertions(2)
 
-    const catalog = new RemoteCatalog('fr', () => ':3006/fr.json')
+    const catalog = new RemoteCatalog('fr', () => 'localhost:3006/fr.json')
 
     const p = catalog.prepare().then(() => {
         expect(catalog.status).toBe('ready')

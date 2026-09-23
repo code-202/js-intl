@@ -1,6 +1,6 @@
 {
     "name": "@code-202/intl",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "main": "build/index.js",
     "typings": "build/index",
     "repository": "git@github.com:code-202/js-intl.git",
@@ -11,7 +11,7 @@
         "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"esw --watch --ext=.ts,.tsx ./src\"",
         "build": "tsc",
         "eslint": "eslint --ext=.ts,.tsx src/*",
-        "test": "jest"
+        "test": "yarn node --experimental-vm-modules $(yarn bin jest)"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
