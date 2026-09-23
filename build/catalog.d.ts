@@ -29,3 +29,4 @@ export declare class UnknownLocaleError extends IntlError {
 }
 export declare class UnreachableRemoteError extends IntlError {
 }
+//# sourceMappingURL=catalog.d.ts.map

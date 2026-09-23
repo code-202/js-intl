@@ -8,7 +8,8 @@ export interface Props extends MessageDescriptor {
 declare class FormattedMessage extends React.PureComponent<Props> {
     private locale;
     constructor(props: Props);
-    render(): string | number | boolean | React.ReactFragment | JSX.Element | null | undefined;
+    render(): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;
 }
 declare const _default: typeof FormattedMessage;
 export default _default;
+//# sourceMappingURL=formatted-message.d.ts.map

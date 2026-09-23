@@ -22,3 +22,4 @@ exports.UnknownLocaleError = UnknownLocaleError;
 class UnreachableRemoteError extends IntlError {
 }
 exports.UnreachableRemoteError = UnreachableRemoteError;
+//# sourceMappingURL=catalog.js.map

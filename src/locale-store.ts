@@ -3,7 +3,7 @@ import { Denormalizable, Normalizable } from '@code-202/serializer'
 import { makeObservable, observable, action, computed, reaction, IReactionDisposer, autorun } from 'mobx'
 import { BadLocaleCatalogError, Catalog, CatalogMessages, CatalogStatus, UnknownLocaleError } from './catalog'
 import { MultipleCatalog, MultipleCatalogNormalized } from './multiple-catalog'
-import {createIntl, createIntlCache, IntlShape, IntlCache} from '@formatjs/intl'
+import { createIntl, createIntlCache, IntlShape, IntlCache } from '@formatjs/intl'
 
 export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denormalizable<LocaleStoreNormalized> {
     private _status: CatalogStatus = 'waiting'
@@ -15,8 +15,8 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
 
     catalogs: MultipleCatalog[] = []
 
-    constructor (locales: string[]) {
-        makeObservable <LocaleStore, '_status' | '_locale' | '_messages'>(this, {
+    constructor(locales: string[]) {
+        makeObservable<LocaleStore, '_status' | '_locale' | '_messages'>(this, {
             _status: observable,
             _locale: observable,
             _messages: observable,
@@ -44,23 +44,23 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         })
     }
 
-    get locale (): string {
+    get locale(): string {
         return this._locale
     }
 
-    get status (): CatalogStatus {
+    get status(): CatalogStatus {
         return this._status
     }
 
-    get messages (): CatalogMessages {
+    get messages(): CatalogMessages {
         return this._messages
     }
 
-    get intl (): IntlShape<React.ReactNode> {
+    get intl(): IntlShape<React.ReactNode> {
         return this._intl
     }
 
-    add (catalog: Catalog, soft: boolean = false): Promise<void> {
+    add(catalog: Catalog, soft: boolean = false): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const mc = this.getCatalog(catalog.locale)
             if (mc) {
@@ -75,7 +75,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         })
     }
 
-    changeLocale (locale: string): Promise<void> {
+    changeLocale(locale: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (this._disposer) {
                 this._disposer()
@@ -108,7 +108,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         })
     }
 
-    getCatalog (locale: string): MultipleCatalog | null {
+    getCatalog(locale: string): MultipleCatalog | null {
         for (const catalog of this.catalogs) {
             if (catalog.locale === locale) {
                 return catalog
@@ -118,7 +118,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return null
     }
 
-    getCatalogsByDomain (domain: string): Catalog[] {
+    getCatalogsByDomain(domain: string): Catalog[] {
         const mc = this.getCatalog(this.locale)
         if (mc) {
             return mc.getCatalogsByDomain(domain)
@@ -127,7 +127,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return []
     }
 
-    get domains (): string[] {
+    get domains(): string[] {
         const mc = this.getCatalog(this.locale)
         if (mc) {
             return mc.domains
@@ -136,11 +136,11 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return []
     }
 
-    hasDomain (domain: string): boolean {
+    hasDomain(domain: string): boolean {
         return this.domains.indexOf(domain) >= 0
     }
 
-    get activeDomains (): string[] {
+    get activeDomains(): string[] {
         const activeDomains = []
 
         for (const domain of this.domains) {
@@ -162,7 +162,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return activeDomains
     }
 
-    hasActiveDomain (domain: string): boolean {
+    hasActiveDomain(domain: string): boolean {
         return this.activeDomains.indexOf(domain) >= 0
     }
 
@@ -173,7 +173,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         }, this._intlCache)
     }
 
-    normalize (): LocaleStoreNormalized {
+    normalize(): LocaleStoreNormalized {
         const data = {
             status: this.status,
             locale: this.locale,
@@ -188,7 +188,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         return data
     }
 
-    denormalize (data: LocaleStoreNormalized) {
+    denormalize(data: LocaleStoreNormalized) {
         action(() => {
             this._status = data.status
             this._locale = data.locale
@@ -198,7 +198,7 @@ export class LocaleStore implements Normalizable<LocaleStoreNormalized>, Denorma
         for (const locale in data.catalogs) {
             for (const c of this.catalogs) {
                 if (locale == c.locale) {
-                    c.denormalize(data.catalogs[locale])
+                    c.denormalize(data.catalogs[locale] as MultipleCatalogNormalized)
                 }
             }
         }

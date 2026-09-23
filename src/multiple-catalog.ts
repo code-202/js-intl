@@ -11,8 +11,8 @@ export class MultipleCatalog implements Catalog {
     private _prepared: boolean = false
     private _normalizedRemaining: CatalogNormalized[] = []
 
-    constructor (locale: string, id: string = '') {
-        makeObservable <MultipleCatalog, 'refreshStatus'>(this, {
+    constructor(locale: string, id: string = '') {
+        makeObservable<MultipleCatalog, 'refreshStatus'>(this, {
             catalogs: observable,
             status: observable,
 
@@ -23,18 +23,18 @@ export class MultipleCatalog implements Catalog {
             refreshStatus: action,
         })
 
-        this._id = id || 'multi.'+locale
+        this._id = id || 'multi.' + locale
         this.catalogs = []
         this.status = 'waiting'
 
         this._locale = locale
     }
 
-    get id (): string {
+    get id(): string {
         return this._id
     }
 
-    add (catalog: Catalog, soft: boolean = false): Promise<void> {
+    add(catalog: Catalog, soft: boolean = false): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (catalog.locale != this._locale) {
                 throw new BadLocaleCatalogError('bad locale, ' + this._locale + ' expected and ' + catalog.locale + ' received')
@@ -52,8 +52,8 @@ export class MultipleCatalog implements Catalog {
 
             for (const i in this._normalizedRemaining) {
 
-                if (this._normalizedRemaining[i].id == catalog.id) {
-                    catalog.denormalize(this._normalizedRemaining[i])
+                if ((this._normalizedRemaining[i] as CatalogNormalized).id == catalog.id) {
+                    catalog.denormalize(this._normalizedRemaining[i] as CatalogNormalized)
 
                     this._normalizedRemaining.splice(parseInt(i), 1)
                     continue
@@ -80,7 +80,7 @@ export class MultipleCatalog implements Catalog {
         })
     }
 
-    hasCatalog (id: string): boolean {
+    hasCatalog(id: string): boolean {
         for (const catalog of this.catalogs) {
             if (catalog.id == id) {
                 return true
@@ -90,7 +90,7 @@ export class MultipleCatalog implements Catalog {
         return false
     }
 
-    getCatalogsByDomain (domain: string): Catalog[] {
+    getCatalogsByDomain(domain: string): Catalog[] {
         const catalogs: Catalog[] = []
 
         for (const catalog of this.catalogs) {
@@ -102,11 +102,11 @@ export class MultipleCatalog implements Catalog {
         return catalogs
     }
 
-    get locale () {
+    get locale() {
         return this._locale
     }
 
-    get messages () {
+    get messages() {
         let messages: CatalogMessages = {}
 
         for (const catalog of this.catalogs) {
@@ -116,7 +116,7 @@ export class MultipleCatalog implements Catalog {
         return messages
     }
 
-    get domains (): string[] {
+    get domains(): string[] {
         let domains: string[] = []
 
         for (const catalog of this.catalogs) {
@@ -126,15 +126,15 @@ export class MultipleCatalog implements Catalog {
         return domains.filter((item, index) => domains.indexOf(item) === index)
     }
 
-    hasDomain (domain: string): boolean {
+    hasDomain(domain: string): boolean {
         return this.domains.indexOf(domain) >= 0
     }
 
-    prepare (): Promise<void> {
+    prepare(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this._prepared = true
             if (this.catalogs.length) {
-                const promises : Promise<void>[] = []
+                const promises: Promise<void>[] = []
                 action(() => {
                     this.status = 'updating'
                 })()
@@ -160,7 +160,7 @@ export class MultipleCatalog implements Catalog {
         })
     }
 
-    private refreshStatus () {
+    private refreshStatus() {
         if (!this._prepared) {
             return 'waiting'
         }
@@ -197,8 +197,8 @@ export class MultipleCatalog implements Catalog {
         const normalizedCatalogs = data.catalogs.slice(0)
         for (const catalog of this.catalogs) {
             for (const i in normalizedCatalogs) {
-                if (normalizedCatalogs[i].id == catalog.id) {
-                    catalog.denormalize(normalizedCatalogs[i])
+                if ((normalizedCatalogs[i] as CatalogNormalized).id == catalog.id) {
+                    catalog.denormalize(normalizedCatalogs[i] as CatalogNormalized)
 
                     normalizedCatalogs.splice(parseInt(i), 1)
                     continue

@@ -8,7 +8,7 @@ import { RemoteCatalog } from './remote-catalog'
 import { SimpleCatalog } from './simple-catalog'
 
 export {
-    Catalog,
+    type Catalog,
     CatalogAwaiter,
     CatalogComponent,
     FormattedMessage,

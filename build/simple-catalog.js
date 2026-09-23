@@ -19,3 +19,4 @@ class SimpleCatalog extends abstract_catalog_1.AbstractCatalog {
     }
 }
 exports.SimpleCatalog = SimpleCatalog;
+//# sourceMappingURL=simple-catalog.js.map

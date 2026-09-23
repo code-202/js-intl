@@ -12,3 +12,4 @@ export declare class RemoteCatalog extends AbstractCatalog {
 export interface RemoteCatalogNormalized extends CatalogNormalized {
     messages?: CatalogMessages;
 }
+//# sourceMappingURL=remote-catalog.d.ts.map

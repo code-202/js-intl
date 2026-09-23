@@ -184,3 +184,4 @@ class MultipleCatalog {
     }
 }
 exports.MultipleCatalog = MultipleCatalog;
+//# sourceMappingURL=multiple-catalog.js.map

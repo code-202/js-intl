@@ -167,3 +167,4 @@ class LocaleStore {
     }
 }
 exports.LocaleStore = LocaleStore;
+//# sourceMappingURL=locale-store.js.map

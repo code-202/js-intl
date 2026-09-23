@@ -24,3 +24,4 @@ export interface MultipleCatalogNormalized extends CatalogNormalized {
     status: CatalogStatus;
     catalogs: CatalogNormalized[];
 }
+//# sourceMappingURL=multiple-catalog.d.ts.map

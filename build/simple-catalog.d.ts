@@ -7,3 +7,4 @@ export declare class SimpleCatalog extends AbstractCatalog {
     get status(): CatalogStatus;
     prepare(): Promise<void>;
 }
+//# sourceMappingURL=simple-catalog.d.ts.map

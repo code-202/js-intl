@@ -14,3 +14,4 @@ export declare abstract class AbstractCatalog implements Catalog {
     normalize(): CatalogNormalized;
     denormalize(data: CatalogNormalized): void;
 }
+//# sourceMappingURL=abstract-catalog.d.ts.map

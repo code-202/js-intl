@@ -34,3 +34,4 @@ export interface LocaleStoreNormalized {
     messages: CatalogMessages;
     catalogs: Record<string, MultipleCatalogNormalized>;
 }
+//# sourceMappingURL=locale-store.d.ts.map

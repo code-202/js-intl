@@ -35,3 +35,4 @@ class AbstractCatalog {
     }
 }
 exports.AbstractCatalog = AbstractCatalog;
+//# sourceMappingURL=abstract-catalog.js.map

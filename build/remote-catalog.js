@@ -66,3 +66,4 @@ class RemoteCatalog extends abstract_catalog_1.AbstractCatalog {
     }
 }
 exports.RemoteCatalog = RemoteCatalog;
+//# sourceMappingURL=remote-catalog.js.map
