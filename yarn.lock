@@ -296,10 +296,10 @@
     "@code-202/serializer" "^1.1.0"
     superagent "^10.4.0"
 
-"@code-202/kernel@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/@code-202/kernel/-/kernel-2.1.0.tgz#7def3b3f3869c3ac3c884c5312816b10b058ec75"
-  integrity sha512-1s3uKnWDjMUpIA0b+WH7btgDhidmyySTQXNZbNK7sv2g6zqu4OrMWQjuReiVM4obDTnxHpHS6jChUqKn9AKk5Q==
+"@code-202/kernel@^2.2":
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/@code-202/kernel/-/kernel-2.2.0.tgz#438846313572e164f2791a816d69f1b932f7945d"
+  integrity sha512-ZtPE5AC2v1e18GW0SlmGLL6Sbs95m1ferfH8ovEpLrWIVx0H1cjwXACEc4Nk7j1fLkTUm0wMP5s//PfRi9BXBw==
   dependencies:
     "@code-202/serializer" "^1.0.0"
     lodash.has "^4.5.2"
